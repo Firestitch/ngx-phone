@@ -6,16 +6,24 @@ addons:
   firefox: latest
 language: node_js
 node_js:
-  - "8"
+  - "10"
 cache:
   directories:
     - "node_modules"
-    - "./tools/node_modules"
+git:
+  submodules:
+    false
+before_install:
+  - ls
+  - echo -e "\n\nmachine github.com\n  $GITHUB_TOKEN\n" >~/.netrc
+  - sed -i 's/git@github.com:/https:\/\/github.com\//' .gitmodules
+  - git submodule update --init --recursive
 install:
   - ls
   - npm i
   - cd ./tools
   - npm i
+  - npx selenium-standalone install
 script:
   - ls
   - npx selenium-standalone start &
