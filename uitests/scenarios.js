@@ -1,4 +1,3 @@
-// const TestScenario = require('fs-base/TestScenario')
 const wait = require('../tools/node_modules/fs-base/Waiter')
 const Phone = require('./Phone')
 
@@ -12,15 +11,8 @@ class BaseScenarioDataSet {
     }
 }
 
-// const alpabeticSymbolsDiscarded = new TestScenario('Alphabetical symbols are not allowed', , BaseScenarioDataSet)
-// const partiallyFillIsAccepted = new TestScenario(, BaseScenarioDataSet)
 
-// module.exports = { alpabeticSymbolsDiscarded, partiallyFillIsAccepted }
-
-
-// import { all } from '../tools/testing/jasmine-ddt';
 const all = require('../tools/testing/jasmine-ddt').all
-// import { alpabeticSymbolsDiscarded, partiallyFillIsAccepted } from 'fs-phone/scenarios';
 
 describe('Phone input', function () {
     beforeAll(() => {

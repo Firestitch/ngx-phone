@@ -1,0 +1,33 @@
+sudo: required
+dist: trusty
+env:
+  - MOZ_HEADLESS=1
+addons:
+  firefox: latest
+language: node_js
+node_js:
+  - "8"
+cache:
+  directories:
+    - "node_modules"
+    - "./tools/node_modules"
+install:
+  - ls
+  - npm i
+  - cd ./tools
+  - npm i
+script:
+  - ls
+  - npx selenium-standalone start &
+  - sleep 9
+after_success:
+  - ls
+  - node ./runUITests.js
+deploy:
+  provider: pages
+  skip-cleanup: true
+  github-token: $GITHUB_TOKEN
+  keep-history: true
+  on:
+    branch: introUITests
+  local-dir: ./report
