@@ -29,7 +29,7 @@ export class FsPhoneDirective implements OnInit {
     private regexes;
     private caretMove;
 
-    //hack, because some events wont move caret on keydown
+    // hack, because some events wont move caret on keydown
     private goOnKeyup;
     @Input('fsPhoneConfig')
     fsPhoneConfig = {
@@ -38,7 +38,8 @@ export class FsPhoneDirective implements OnInit {
     }
 
 
-    //event hooks for VALUE_ACCESSOR. those are used to imitate real input behavior and emit events outside the directive, e.g. "touched"
+    // event hooks for VALUE_ACCESSOR. those are used to imitate real input behavior
+    // and emit events outside the directive, e.g. "touched"
     _onTouched = () => {
 
     }
@@ -47,19 +48,19 @@ export class FsPhoneDirective implements OnInit {
         this.setInitialValue(event);
     }
 
-    //sets the initial value of text-mask when first focused or when cleared
+    // sets the initial value of text-mask when first focused or when cleared
     setInitialValue(event) {
-        let value = event.target.value
+        const value = event.target.value
 
         if (!value || !value.length) {
             this._elementRef.nativeElement.value = this.service.getInitialValue(this.mask);
-            let caret = this.service.getFirstAvailableCaretPos(this.mask);
+            const caret = this.service.getFirstAvailableCaretPos(this.mask);
             event.target.setSelectionRange(caret, caret);
         }
     }
 
 
-    //some of the keys cant be processed on keydown, because they only initiate functionality after keyup
+    // some of the keys cant be processed on keydown, because they only initiate functionality after keyup
     onKeyup = (event: any) => {
         if (
             event.key == 'Delete' ||
@@ -67,42 +68,48 @@ export class FsPhoneDirective implements OnInit {
         ) {
             this.setInitialValue(event);
         } else if (event.key == 'Home') {
-            let caret = this.service.getFirstAvailableCaretPos(this.mask);
+            const caret = this.service.getFirstAvailableCaretPos(this.mask);
             event.target.setSelectionRange(caret, caret);
         }
 
-        if(this.goOnKeyup) {
+        if (this.goOnKeyup) {
             event.target.setSelectionRange(this.goOnKeyup, this.goOnKeyup);
             delete this.goOnKeyup;
         }
     }
 
-    //mouse click on input
+    // mouse click on input
     onClick = (event: any) => {
         this.manageCaret(event);
     }
 
 
-    //one of hugest struggles - caret position on focus/copy-paste/deletion etc. puts caret on first unfilled input place
+    // one of hugest struggles - caret position on focus/copy-paste/deletion etc.
+    // puts caret on first unfilled input place
     manageCaret(event) {
         let caret = event.target.selectionStart;
-        if(event.target.value.indexOf('_') != -1 && event.target.selectionStart > event.target.value.indexOf('_'))
+        if (event.target.value.indexOf('_') != -1 &&
+            event.target.selectionStart > event.target.value.indexOf('_')) {
             caret = event.target.value.indexOf('_');
-        else caret = this.trackCaret(event);
+        } else {
+          caret = this.trackCaret(event);
+        }
+
         event.target.setSelectionRange(caret, caret);
     }
 
-    //managemenet of unusual events on input, not just usual inputs
+    // managemenet of unusual events on input, not just usual inputs
     onKeydown = (event: any) => {
-        switch(event.key) {
+        switch (event.key) {
             case 'Shift': break;
             case 'Meta': break;
             case 'ArrowRight': break;
             case 'ArrowLeft':
-                if(!event.shiftKey && !event.metaKey) {
+                if (!event.shiftKey && !event.metaKey) {
                     let caret = event.target.selectionStart;
-                    if (this.service.getFirstAvailableCaretPos(this.mask) >= caret)
+                    if (this.service.getFirstAvailableCaretPos(this.mask) >= caret) {
                         caret = event.target.selectionStart + 1;
+                    }
                     event.target.setSelectionRange(caret, caret);
                 } else if (event.metaKey) {
                     this.goOnKeyup = this.service.getFirstAvailableCaretPos(this.mask);
@@ -126,16 +133,17 @@ export class FsPhoneDirective implements OnInit {
 
     // sets the caret based on event happened. has some HTML-glitch hacks
     trackCaret(event, preset = 0) {
-        let caret = this.service.caretPosition(event.target.selectionStart, this.mask, event.target.value);
+        const caret = this.service.caretPosition(event.target.selectionStart, this.mask, event.target.value);
 
         this.caretMove = caret + preset;
-        //means backspace
-        if(preset == -2) {
+        // means backspace
+        if (preset == -2) {
             this.caretMove = event.target.selectionStart-2;
         }
 
-        if(event.key && event.key.length == 1 && !this.service.isValidForInput(event.key, this.caretMove, this.mask))
+        if (event.key && event.key.length == 1 && !this.service.isValidForInput(event.key, this.caretMove, this.mask)) {
             this.caretMove--;
+        }
 
         return this.caretMove;
     }
@@ -157,15 +165,16 @@ export class FsPhoneDirective implements OnInit {
 
     }
 
-    //init functions
+    // init functions
     ngOnInit() {
         this.mask = this.service.determineMask(this.fsPhoneConfig.maskType, this.fsPhoneConfig.mask);
         this.regexes = this.service.combineRegexes(this.mask);
     }
 
-    //whenever user changes anything inside the input, this function is fired. happens after the input, not wired on keypresses but on input value changes
+    // whenever user changes anything inside the input, this function is fired.
+    // happens after the input, not wired on keypresses but on input value changes
     private onChangeInterceptor(event): void {
-        let fittingValues = this.service.getFittingArr(
+        const fittingValues = this.service.getFittingArr(
             event.target.value,
             this.mask,
             this.regexes
@@ -186,7 +195,7 @@ export class FsPhoneDirective implements OnInit {
         // this.manageCaret(event);
     }
 
-    //main function used to re-write user input with the mask and emit changes out of the directive
+    // main function used to re-write user input with the mask and emit changes out of the directive
     private writeValue(value: any, returnHere, initialCall = true): void {
       if (initialCall && !value) {
         return;
