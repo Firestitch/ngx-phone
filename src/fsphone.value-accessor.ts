@@ -6,4 +6,4 @@ export const PHONE_VALUE_ACCESSOR: Provider = {
   provide: NG_VALUE_ACCESSOR,
   useExisting: forwardRef(() => FsPhoneDirective),
   multi: true
-}
+};
