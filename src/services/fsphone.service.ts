@@ -1,5 +1,6 @@
 import {Injectable} from '@angular/core';
 import {PHONE_MASKS} from '../fsphone-masks';
+import {toString} from 'lodash';
 
 const INPUT_PLACEHOLDER = '_';
 
@@ -70,7 +71,7 @@ export class FsPhone {
 
   // text-mask consists of two types of elements - simple characters to be put for user visual and regexes to be replaced with user inputs. this function extracts characters which fit into regex and that dont overflow with string-characters (e.g. +1)
   public getFittingArr(value, mask, regexArr) {
-    let valueArr = value.split('');
+    let valueArr = toString(value).split('');
 
     let regexCounter = 0;
     let fittingValues = [];
