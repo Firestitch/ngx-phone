@@ -16,6 +16,7 @@ src/*.d.ts
 
 # VS Code
 .vscode/*
+/*.code-workspace
 
 # Windows
 Thumbs.db
@@ -42,5 +43,7 @@ dist/*
 /package-lock.json
 /demo
 /package
+/demo
+/docs
 /package
-/*.code-workspace
+/src/package.json

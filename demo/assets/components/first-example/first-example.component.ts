@@ -6,7 +6,7 @@ import { Component } from '@angular/core';
   styleUrls: [ 'first-example.component.css' ]
 })
 export class FirstExampleComponent {
-  phone = null;
+  public phone = null;
 
   constructor() {
   }
