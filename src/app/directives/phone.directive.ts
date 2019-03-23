@@ -42,8 +42,6 @@ export const PHONE_VALUE_ACCESSOR: Provider = {
 @Directive({
   host: {
     '(input)': 'onChangeHandler($event)',
-    '(tap)': 'onClickHandler($event)',
-    '(focus)': 'onFocusedHandler($event)',
     '(paste)': 'onPasteHandler($event)',
     '(keyup)': 'onKeyupHandler($event)',
     '(keydown)': 'onKeydownHandler($event)',
@@ -61,12 +59,9 @@ export class FsPhoneDirective implements OnChanges {
   };
 
   @Input() public ngModel = null;
-  @Output() public ngModelChange = new EventEmitter<any>();
 
   public onKeyupHandler = this.onKeuyp.bind(this);
   public onKeydownHandler = this.onKeydown.bind(this);
-  public onClickHandler = this.onClick.bind(this);
-  public onFocusedHandler = this.onFocused.bind(this);
   public onPasteHandler = this.onPaste.bind(this);
   public onChangeHandler = this.onChangeInterceptor.bind(this);
 
@@ -129,7 +124,7 @@ export class FsPhoneDirective implements OnChanges {
     switch (event.keyCode) {
       case DELETE:
       case BACKSPACE: {
-        this.setInitialValue();
+
       }
         break;
       case HOME: {
@@ -178,14 +173,6 @@ export class FsPhoneDirective implements OnChanges {
     }
   }
 
-  public onClick(event: MouseEvent) {
-    this.manageCaret(event);
-  };
-
-  public onFocused(event: MouseEvent) {
-    this.setInitialValue();
-  };
-
   public onPaste(event: any) {
     this.caretMove = void 0;
   }
@@ -199,13 +186,13 @@ export class FsPhoneDirective implements OnChanges {
    *  Sets the initial value of text-mask when first focused or when cleared
    */
   private setInitialValue() {
-    const value = this.ngModel;
+    // const value = this.ngModel;
 
-    if (!value || !value.length) {
-      this._elementRef.nativeElement.value = this.service.getInitialValue(this.mask);
-      const caret = this.service.getFirstAvailableCaretPos(this.mask);
-      this.setCaret(caret);
-    }
+    // if (!value || !value.length) {
+    //   this._elementRef.nativeElement.value = this.service.getInitialValue(this.mask);
+    //   const caret = this.service.getFirstAvailableCaretPos(this.mask);
+    //   this.setCaret(caret);
+    // }
   }
 
   // whenever user changes anything inside the input, this function is fired.
@@ -220,20 +207,10 @@ export class FsPhoneDirective implements OnChanges {
     let newValue: string;
     newValue = this.service.formatValue(fittingValues, this.mask);
     this.ngModel = this.service.getPhoneWithoutMask(newValue);
-    this.ngModelChange.emit(this.ngModel);
-    this.writeValue(newValue, event.target.selectionStart, false);
-    // this.manageCaret(event);
-  }
 
-  /**
-   *  Main function used to re-write user input with the mask and emit changes out of the directive
-   */
-  private writeValue(value: any, returnHere, initialCall = true) {
-    if (initialCall && !value) {
-      return;
-    }
-    this._elementRef.nativeElement.value = value;
+    this._elementRef.nativeElement.value = newValue;
     let caretDelta = 0;
+    let returnHere = event.target.selectionStart;
     if (this.caretMove) {
       returnHere = this.caretMove + 1;
       this.caretMove = void 0;
@@ -242,6 +219,23 @@ export class FsPhoneDirective implements OnChanges {
     }
     this.setCaret(returnHere + caretDelta);
     this._onChange(this.ngModel);
+  }
+
+  /**
+   *  Main function used to re-write user input with the mask and emit changes out of the directive
+   */
+  private writeValue(value: any) {
+
+    this._elementRef.nativeElement.value = value;
+    let caretDelta = 0;
+    let returnHere = 0;
+    if (this.caretMove) {
+      returnHere = this.caretMove + 1;
+      this.caretMove = void 0;
+    } else {
+      caretDelta = this.service.getCaretDelta(0, this.mask);
+    }
+    this.setCaret(returnHere + caretDelta);
   }
 
   /**
@@ -256,14 +250,7 @@ export class FsPhoneDirective implements OnChanges {
    *  puts caret on first unfilled input place
    */
   private manageCaret(event) {
-    let caretPos = event.target.selectionStart;
-    const lastEmptyElem = event.target.value.indexOf('_');
 
-    caretPos = (lastEmptyElem !== -1 && caretPos > lastEmptyElem)
-      ? lastEmptyElem
-      : this.trackCaret(event);
-
-    this.setCaret(caretPos);
   }
 
   /**
