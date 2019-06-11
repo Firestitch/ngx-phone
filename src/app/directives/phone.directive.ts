@@ -182,19 +182,6 @@ export class FsPhoneDirective implements OnChanges {
     this._elementRef.nativeElement.setAttribute('disabled', isDisabled);
   }
 
-  /**
-   *  Sets the initial value of text-mask when first focused or when cleared
-   */
-  private setInitialValue() {
-    // const value = this.ngModel;
-
-    // if (!value || !value.length) {
-    //   this._elementRef.nativeElement.value = this.service.getInitialValue(this.mask);
-    //   const caret = this.service.getFirstAvailableCaretPos(this.mask);
-    //   this.setCaret(caret);
-    // }
-  }
-
   // whenever user changes anything inside the input, this function is fired.
   // happens after the input, not wired on keypresses but on input value changes
   private onChangeInterceptor(event) {
@@ -225,17 +212,7 @@ export class FsPhoneDirective implements OnChanges {
    *  Main function used to re-write user input with the mask and emit changes out of the directive
    */
   private writeValue(value: any) {
-
     this._elementRef.nativeElement.value = value;
-    let caretDelta = 0;
-    let returnHere = 0;
-    if (this.caretMove) {
-      returnHere = this.caretMove + 1;
-      this.caretMove = void 0;
-    } else {
-      caretDelta = this.service.getCaretDelta(0, this.mask);
-    }
-    this.setCaret(returnHere + caretDelta);
   }
 
   /**
