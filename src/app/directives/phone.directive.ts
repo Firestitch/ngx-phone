@@ -71,6 +71,7 @@ export class FsPhoneDirective implements OnChanges {
 
   // hack, because some events wont move caret on keydown
   private goOnKeyup;
+  private caretPosition = 0;
 
 
   // event hooks for VALUE_ACCESSOR. those are used to imitate real input behavior
@@ -112,7 +113,10 @@ export class FsPhoneDirective implements OnChanges {
 
       let newValue: string;
       newValue = this.service.formatValue(fittingValues, this.mask);
-      setTimeout(() => this._elementRef.nativeElement.value = newValue, 0);
+      setTimeout(() => {
+        this._elementRef.nativeElement.value = newValue;
+        this.setCaret();
+      }, 0);
     }
   }
 
@@ -185,6 +189,11 @@ export class FsPhoneDirective implements OnChanges {
   // whenever user changes anything inside the input, this function is fired.
   // happens after the input, not wired on keypresses but on input value changes
   private onChangeInterceptor(event) {
+    this.changeCaretPosition(event);
+    this._onChange(this.ngModel);
+  }
+
+  private changeCaretPosition(event) {
     const fittingValues = this.service.getFittingArr(
       event.target.value,
       this.mask,
@@ -204,8 +213,8 @@ export class FsPhoneDirective implements OnChanges {
     } else {
       caretDelta = this.service.getCaretDelta(returnHere, this.mask);
     }
-    this.setCaret(returnHere + caretDelta);
-    this._onChange(this.ngModel);
+    this.caretPosition = returnHere + caretDelta;
+    this.setCaret(this.caretPosition);
   }
 
   /**
@@ -218,7 +227,7 @@ export class FsPhoneDirective implements OnChanges {
   /**
    * Set position for the caret
    */
-  private setCaret(position) {
+  private setCaret(position = this.caretPosition) {
     this._elementRef.nativeElement.setSelectionRange(position, position);
   }
 
