@@ -2,7 +2,8 @@ import {
   Directive,
   ElementRef,
   forwardRef,
-  OnInit
+  OnInit,
+  HostListener
 } from '@angular/core';
 
 
@@ -21,6 +22,13 @@ import { toString } from 'lodash-es';
   } ]
 })
 export class FsPhoneDirective implements OnInit {
+
+  @HostListener('focus') onfocus() {
+    const length = this._elementRef.nativeElement.value.length;
+    setTimeout(() => {
+      this._elementRef.nativeElement.setSelectionRange(length, length);
+    }, 5);
+  }
 
   private _imask;
 
