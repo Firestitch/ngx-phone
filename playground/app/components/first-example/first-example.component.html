@@ -11,3 +11,8 @@
       (ngModelChange)="changed($event)">
   </mat-form-field>
 </form>
+
+<fieldset *ngIf="phone">
+  <legend>Phone Value</legend>
+  <pre>{{phone}}</pre>
+</fieldset>

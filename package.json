@@ -62,7 +62,8 @@
     "typescript": "^3.1.6",
     "webpack": "^4.29",
     "webpack-dev-server": "^3.1.14",
-    "zone.js": "^0.8.28"
+    "zone.js": "^0.8.28",
+    "imask": "^5.1.7"
   },
   "engines": {
     "node": ">=6.0.0"
