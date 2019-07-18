@@ -6,12 +6,12 @@ import { Component } from '@angular/core';
   styleUrls: [ 'first-example.component.css' ]
 })
 export class FirstExampleComponent {
-  public phone = null;
+  public phone = 5555555555;
 
   constructor() {
   }
 
-  save() {
-
+  changed(e) {
+    console.log(e);
   }
 }
