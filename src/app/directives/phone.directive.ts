@@ -19,7 +19,7 @@ import { toString } from 'lodash-es';
     provide: NG_VALUE_ACCESSOR,
     useExisting: forwardRef(() => FsPhoneDirective),
     multi: true
-  } ]
+  }]
 })
 export class FsPhoneDirective implements OnInit {
 
@@ -30,8 +30,10 @@ export class FsPhoneDirective implements OnInit {
     }, 5);
   }
 
-  @HostListener('keyup') input() {
-    this._onChange(this._imask.unmaskedValue);
+  @HostListener('input') input() {
+    setTimeout(() => {
+      this._onChange(this._imask.unmaskedValue);
+    });
   }
 
   private _imask;

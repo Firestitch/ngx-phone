@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 
 // Components
 import { FsPhoneDirective } from './directives/phone.directive';
+import { FsPhonePipe } from './pipes/phone-format.pipe';
 
 
 @NgModule({
@@ -11,9 +12,11 @@ import { FsPhoneDirective } from './directives/phone.directive';
   ],
   exports: [
     FsPhoneDirective,
+    FsPhonePipe
   ],
   declarations: [
     FsPhoneDirective,
+    FsPhonePipe
   ],
 })
 export class FsPhoneModule {
