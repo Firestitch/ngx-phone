@@ -30,6 +30,10 @@ export class FsPhoneDirective implements OnInit {
     }, 5);
   }
 
+  @HostListener('keyup') input() {
+    this._onChange(this._imask.unmaskedValue);
+  }
+
   private _imask;
 
   _onTouched = () => {};
@@ -52,12 +56,9 @@ export class FsPhoneDirective implements OnInit {
     };
 
     this._imask = IMask(this._elementRef.nativeElement, maskOptions);
-    this._imask.on('accept', () => {
-      this._onChange(this._imask.unmaskedValue);
-    });
   }
 
-  private writeValue(value: any) {
+  public writeValue(value: any) {
     this._imask.value = toString(value);
   }
 }
