@@ -17,7 +17,7 @@ export class FsPhonePipe implements PipeTransform {
         formatted = '(' + match[1] + ') ' + match[2] + '-' + match[3];
 
         if (match[4]) {
-          formatted += ' Ext. ' + match[4];
+          formatted += ' ext. ' + match[4];
         }
       };
 
