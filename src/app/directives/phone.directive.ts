@@ -54,7 +54,7 @@ export class FsPhoneDirective implements OnInit {
 
   public ngOnInit() {
     const maskOptions = {
-      mask: '(000) 000-0000'
+      mask: '(000) 000-0000 ext. 00000'
     };
 
     this._imask = IMask(this._elementRef.nativeElement, maskOptions);
