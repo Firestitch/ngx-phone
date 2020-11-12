@@ -1,0 +1,36 @@
+:host {
+  display: block;
+  width: 265px;
+
+  &.with-number-extention {
+    width: 350px;
+  }
+}
+
+.phone-group {
+  display: flex;
+  align-items: baseline;
+
+  .phone-code {
+    min-width: 140px;
+    width: auto;
+  }
+
+  .phone-number {
+    width: 110px;
+    min-width: 110px;
+    margin-left: 10px;
+  }
+
+  .ext-number {
+    margin-left: 10px;
+  }
+}
+
+:host(:not(.floating)) {
+  ::ng-deep {
+    .mat-select-arrow-wrapper .mat-select-arrow {
+      opacity: 0 !important;
+    }
+  }
+}

@@ -13,6 +13,9 @@ import { ToastrModule } from 'ngx-toastr';
 import { AppComponent } from './app.component';
 import { FsMaterialModule } from './material.module';
 import { FirstExampleComponent } from './components/first-example/first-example.component';
+import { PhoneInputWithObjectComponent } from './components/phone-input-with-object/phone-input-with-object.component';
+import { PhoneInputWithStringComponent } from './components/phone-input-with-string/phone-input-with-string.component';
+import { PhoneInputWithStringModeComponent } from './components/phone-input-with-string-mode/phone-input-with-string-mode.component';
 
 
 @NgModule({
@@ -27,11 +30,16 @@ import { FirstExampleComponent } from './components/first-example/first-example.
     FsMessageModule.forRoot(),
     FsExampleModule.forRoot(),
     ToastrModule.forRoot({ preventDuplicates: true }),
+    FsFormModule.forRoot(),
   ],
   entryComponents: [],
   declarations: [
     AppComponent,
-    FirstExampleComponent
+    FirstExampleComponent,
+
+    PhoneInputWithObjectComponent,
+    PhoneInputWithStringComponent,
+    PhoneInputWithStringModeComponent,
   ],
   providers: [],
 })

@@ -1,0 +1,25 @@
+<fieldset class="input-fieldset">
+  <legend>Input Value</legend>
+  {{ input | json }}
+</fieldset>
+
+<form fsForm [submit]="save">
+  <mat-form-field>
+    <mat-label>Phone number</mat-label>
+    <fs-phone
+      [(ngModel)]="model"
+      name="phone"
+      required>
+    </fs-phone>
+    <mat-hint>enter your phone number</mat-hint>
+  </mat-form-field>
+
+  <div class="actions">
+    <button mat-raised-button color="primary">Submit</button>
+  </div>
+</form>
+
+<fieldset>
+  <legend>Phone Value</legend>
+  {{ model | json }}
+</fieldset>

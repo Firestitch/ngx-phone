@@ -1,0 +1,10 @@
+<fieldset class="input-fieldset">
+  <legend>Input Value</legend>
+  {{ input }}
+</fieldset>
+
+<mat-form-field>
+  <mat-label>Phone number</mat-label>
+  <fs-phone [(ngModel)]="model" [allowNumberExt]="true" required></fs-phone>
+  <mat-hint>enter your phone number</mat-hint>
+</mat-form-field>

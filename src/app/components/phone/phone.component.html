@@ -1,0 +1,30 @@
+<ng-container *fsSkeleton="countriesReady$ | async; pattern: [100]">
+  <div class="phone-group" role="group">
+    <mat-select class="phone-code"
+                placeholder="Code"
+                [formControl]="countryControl"
+                #countryInput>
+      <ng-container *ngFor="let country of countries$ | async">
+        <mat-option *ngIf="!!country.callingCode"
+                    [value]="country.code">
+          {{ country.emoji }} {{ country.name }} +{{ country.callingCode }}
+        </mat-option>
+      </ng-container>
+    </mat-select>
+
+    <ng-container [formGroup]="phoneNumberParts">
+      <input class="phone-number"
+             matInput
+             placeholder="Phone"
+             formControlName="number"
+             maxlength="15"
+             #phoneNumberInput>
+
+      <ng-container *ngIf="allowNumberExt && extPrefix">
+        {{ extPrefix }}
+
+        <input class="ext-number" matInput placeholder="xxx" formControlName="ext" maxlength="5">
+      </ng-container>
+    </ng-container>
+  </div>
+</ng-container>
