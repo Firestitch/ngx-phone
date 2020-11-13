@@ -11,9 +11,10 @@ import { FsSkeletonModule } from '@firestitch/skeleton';
 import { FsCountryModule } from '@firestitch/country';
 
 // Components
+import { FsPhoneFieldComponent } from './components/phone-field/phone-field.component';
 import { FsPhoneDirective } from './directives/phone.directive';
 import { FsPhonePipe } from './pipes/phone-format.pipe';
-import { FsPhoneComponent } from './components/phone/phone.component';
+
 
 
 @NgModule({
@@ -26,12 +27,12 @@ import { FsPhoneComponent } from './components/phone/phone.component';
     FsCountryModule,
   ],
   exports: [
-    FsPhoneComponent,
+    FsPhoneFieldComponent,
     FsPhoneDirective,
     FsPhonePipe,
   ],
   declarations: [
-    FsPhoneComponent,
+    FsPhoneFieldComponent,
     FsPhoneDirective,
     FsPhonePipe,
   ],

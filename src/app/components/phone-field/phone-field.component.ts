@@ -48,17 +48,16 @@ import { PhoneMetadataService } from '../../services/phone-metadata.service';
 
 @Component({
   selector: 'fs-phone-field',
-  templateUrl: './phone.component.html',
+  templateUrl: './phone-field.component.html',
   styleUrls: [
-    './phone.component.scss',
+    './phone-field.component.scss',
   ],
   providers: [
-    PhoneService,
-    {provide: MatFormFieldControl, useExisting: FsPhoneComponent},
+    {provide: MatFormFieldControl, useExisting: FsPhoneFieldComponent},
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class FsPhoneComponent
+export class FsPhoneFieldComponent
   implements OnInit, OnDestroy, ControlValueAccessor, MatFormFieldControl<IPhoneValue | string>, Validator {
 
   public static nextId = 0;
@@ -91,7 +90,7 @@ export class FsPhoneComponent
   public mode: 'string' | 'object' = 'object';
 
   @HostBinding()
-  public id = `example-tel-input-${FsPhoneComponent.nextId++}`;
+  public id = `example-tel-input-${FsPhoneFieldComponent.nextId++}`;
 
   public phoneNumberParts: FormGroup;
 
