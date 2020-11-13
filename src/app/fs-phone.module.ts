@@ -8,6 +8,7 @@ import { MatSelectModule } from '@angular/material/select';
 
 // Skeleton
 import { FsSkeletonModule } from '@firestitch/skeleton';
+import { FsCountryModule } from '@firestitch/country';
 
 // Components
 import { FsPhoneDirective } from './directives/phone.directive';
@@ -22,6 +23,7 @@ import { FsPhoneComponent } from './components/phone/phone.component';
     MatInputModule,
     ReactiveFormsModule,
     FsSkeletonModule,
+    FsCountryModule,
   ],
   exports: [
     FsPhoneComponent,
@@ -31,7 +33,7 @@ import { FsPhoneComponent } from './components/phone/phone.component';
   declarations: [
     FsPhoneComponent,
     FsPhoneDirective,
-    FsPhonePipe
+    FsPhonePipe,
   ],
 })
 export class FsPhoneModule {

@@ -1,13 +1,19 @@
-<ng-container *fsSkeleton="countriesReady$ | async; pattern: [100]">
+<ng-container *fsSkeleton="ready$ | async; pattern: [100]">
   <div class="phone-group" role="group">
     <mat-select class="phone-code"
                 placeholder="Code"
                 [formControl]="countryControl"
+                panelClass="fs-phone__country"
                 #countryInput>
+      <mat-select-trigger>
+        {{ countryControl.value | fsCountryCallingCode }}
+      </mat-select-trigger>
+
       <ng-container *ngFor="let country of countries$ | async">
         <mat-option *ngIf="!!country.callingCode"
                     [value]="country.code">
-          {{ country.emoji }} {{ country.name }} +{{ country.callingCode }}
+          {{ country.name }} +{{ country.callingCode }}
+          <span class="fs-phone__country_flag">{{ country.emoji }}</span>
         </mat-option>
       </ng-container>
     </mat-select>

@@ -26,8 +26,16 @@ import { coerceBooleanProperty } from '@angular/cdk/coercion';
 import { FocusMonitor } from '@angular/cdk/a11y';
 
 
-import { Observable, Subject } from 'rxjs';
-import { distinctUntilChanged, filter, takeUntil } from 'rxjs/operators';
+import { combineLatest, Observable, ReplaySubject, Subject } from 'rxjs';
+import {
+  distinctUntilChanged,
+  filter,
+  map,
+  shareReplay,
+  switchMap,
+  takeUntil,
+  tap,
+} from 'rxjs/operators';
 
 import { FsCountry, IFsCountry } from '@firestitch/country';
 
@@ -35,10 +43,11 @@ import { CountryCode, PhoneNumber } from 'libphonenumber-js';
 
 import { IPhoneValue } from '../../interfaces/phone-value.interface';
 import { PhoneService } from '../../services/phone.service';
+import { PhoneMetadataService } from '../../services/phone-metadata.service';
 
 
 @Component({
-  selector: 'fs-phone',
+  selector: 'fs-phone-field',
   templateUrl: './phone.component.html',
   styleUrls: [
     './phone.component.scss',
@@ -89,12 +98,10 @@ export class FsPhoneComponent
   public focused = false;
   public errorState = false;
   public controlType = 'phone-input';
-
   public stateChanges = new Subject<void>();
-
   public extPrefix = '';
-
   public countryControl = new FormControl('');
+  public ready$: Observable<boolean>;
 
   @ViewChild('phoneNumberInput')
   private _phoneNumberInputRef: ElementRef;
@@ -102,9 +109,11 @@ export class FsPhoneComponent
   @ViewChild('countryInput', { read: ElementRef })
   private _countryInputRef: ElementRef;
 
+  private _externalDataReady = false;
   private _placeholder: string;
   private _required = false;
   private _disabled = false;
+  private _writeValue$ = new ReplaySubject<IPhoneValue | string>(1);
   private _destroy$ = new Subject<void>();
 
   // Value Accessor
@@ -118,18 +127,16 @@ export class FsPhoneComponent
     private _el: ElementRef,
     private _phone: PhoneService,
     private _countriesStore: FsCountry,
+    private _metadata: PhoneMetadataService,
   ) {
     this._initControls();
     this._registerValueAccessor();
     this._registerFocusMonitor();
+    this._initResourcesReadyState();
   }
 
   public get countries$(): Observable<IFsCountry[]> {
     return this._countriesStore.countries$;
-  }
-
-  public get countriesReady$(): Observable<boolean> {
-    return this._countriesStore.loaded$;
   }
 
   public get value(): IPhoneValue | string {
@@ -172,9 +179,9 @@ export class FsPhoneComponent
 
   public get empty(): boolean {
     if (this.mode === 'object') {
-      return !this.codeValue && !this.numberValue;
+      return !this.codeValue && !this.numberValue && this._externalDataReady;
     } else {
-      return !this.value;
+      return !this.value && this._externalDataReady;
     }
   }
 
@@ -193,6 +200,7 @@ export class FsPhoneComponent
 
   public ngOnInit(): void {
     this._applyInternalValidation();
+    this._listenWriteValue();
     this._listenPhonePartsChanges();
     this._listenCountryChanges();
     this._applyMaterialHacks();
@@ -212,41 +220,7 @@ export class FsPhoneComponent
   public setDescribedByIds(ids: string[]) { }
 
   public writeValue(value: IPhoneValue | string) {
-    let phoneNumber: PhoneNumber;
-
-    // In case when string received we must parse it before continue
-    // otherwise we should transform passed object into PhoneNumber instance
-    if (typeof value === 'string') {
-      phoneNumber = this._phone.parsePhoneNumber(value);
-    } else if (value && typeof value === 'object') {
-      phoneNumber = this._phone.parsePhoneNumber(`${value.code}${value.number}`);
-      phoneNumber.ext = value.ext;
-    }
-
-    // If transformed to PhoneNumber correctly
-    if (phoneNumber) {
-      if (!phoneNumber.isValid()) {
-        throw Error('Invalid phone number');
-      }
-
-      const phoneValueObject = this._phone.phoneNumberToPhoneValueObject(phoneNumber);
-
-      this.countryControl.patchValue(phoneValueObject.countryCode, { emitEvent: false });
-
-      this.phoneNumberParts.patchValue({
-        code: phoneValueObject.code || '',
-        number: phoneValueObject.number,
-        ext: phoneValueObject.ext || '',
-      }, { emitEvent: false });
-
-      this._updateExt(phoneValueObject.countryCode as CountryCode);
-    } else {
-      this.phoneNumberParts.reset({
-        code: '',
-        number: '',
-        ext: '',
-      }, { emitEvent: false });
-    }
+    this._writeValue$.next(value);
   }
 
   public registerOnChange(onChange: (value: IPhoneValue) => void): void {
@@ -306,6 +280,20 @@ export class FsPhoneComponent
       number: '',
       ext: '',
     });
+  }
+
+  private _initResourcesReadyState(): void {
+    this.ready$ = combineLatest([this._countriesStore.ready$, this._metadata.ready$])
+      .pipe(
+        map(([countriesReady, metadataReady]) => {
+          return countriesReady && metadataReady;
+        }),
+        tap((state) => {
+          this._externalDataReady = state;
+          this.stateChanges.next();
+        }),
+        shareReplay(1),
+      )
   }
 
   private _listenPhonePartsChanges() {
@@ -387,5 +375,56 @@ export class FsPhoneComponent
 
   private _updateExt(code: CountryCode) {
     this.extPrefix = this._phone.getExtPrefix(code);
+  }
+
+  private _listenWriteValue() {
+    this.ready$
+      .pipe(
+        filter((state) => !!state),
+        switchMap(() => {
+          return this._writeValue$;
+        }),
+      )
+      .subscribe((value) => {
+        this._writeValue(value);
+      })
+  }
+
+  private _writeValue(value: IPhoneValue | string) {
+    let phoneNumber: PhoneNumber;
+
+    // In case when string received we must parse it before continue
+    // otherwise we should transform passed object into PhoneNumber instance
+    if (typeof value === 'string') {
+      phoneNumber = this._phone.parsePhoneNumber(value);
+    } else if (value && typeof value === 'object') {
+      phoneNumber = this._phone.parsePhoneNumber(`${value.code}${value.number}`);
+      phoneNumber.ext = value.ext;
+    }
+
+    // If transformed to PhoneNumber correctly
+    if (phoneNumber) {
+      if (!phoneNumber.isValid()) {
+        throw Error('Invalid phone number');
+      }
+
+      const phoneValueObject = this._phone.phoneNumberToPhoneValueObject(phoneNumber);
+
+      this.countryControl.patchValue(phoneValueObject.countryCode, { emitEvent: false });
+
+      this.phoneNumberParts.patchValue({
+        code: phoneValueObject.code || '',
+        number: phoneValueObject.number,
+        ext: phoneValueObject.ext || '',
+      }, { emitEvent: false });
+
+      this._updateExt(phoneValueObject.countryCode as CountryCode);
+    } else {
+      this.phoneNumberParts.reset({
+        code: '',
+        number: '',
+        ext: '',
+      }, { emitEvent: false });
+    }
   }
 }

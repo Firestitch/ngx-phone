@@ -5,22 +5,30 @@ import {
   formatIncompletePhoneNumber,
   parsePhoneNumber,
   getExtPrefix,
-  PhoneNumber,
+  PhoneNumber, Metadata,
 } from 'libphonenumber-js/core';
 
 // import * as phNumber from 'libphonenumber-js/es6/PhoneNumber';
 // import * as _fr from 'libphonenumber-js/es6/format'
 
-import metadata from 'libphonenumber-js/metadata.full.json';
+// import metadata from 'libphonenumber-js/metadata.full.json';
 
 import { IPhoneValue } from '../interfaces/phone-value.interface';
+import { PhoneMetadataService } from './phone-metadata.service';
 
 
 @Injectable()
 export class PhoneService {
 
+  constructor(private _metadataService: PhoneMetadataService) {
+  }
+
+  public get metadata(): Metadata {
+    return this._metadataService.metadata;
+  }
+
   public formatIncompletePhoneNumber(value: string, country: CountryCode): string {
-    const result = formatIncompletePhoneNumber(value, country, metadata);
+    const result = formatIncompletePhoneNumber(value, country, this.metadata);
 
     if (!result) { return ''; }
 
@@ -31,7 +39,7 @@ export class PhoneService {
     let phoneNumber: PhoneNumber;
 
     try {
-       phoneNumber = parsePhoneNumber(value, metadata);
+       phoneNumber = parsePhoneNumber(value, this.metadata);
     } catch (e) {
       throw new Error('Can not parse passed phone number. ' + e)
     }
@@ -52,7 +60,7 @@ export class PhoneService {
     let phoneNumber: PhoneNumber;
 
     try {
-      phoneNumber = parsePhoneNumber(value.code + value.number, metadata);
+      phoneNumber = parsePhoneNumber(value.code + value.number, this.metadata);
 
       return phoneNumber.isValid() || phoneNumber.isPossible();
     } catch (e) {
@@ -61,7 +69,7 @@ export class PhoneService {
   }
 
   public formatPhoneNumber(value: IPhoneValue): string {
-    const phoneNumber = parsePhoneNumber(`${value.code}${value.number}`, metadata);
+    const phoneNumber = parsePhoneNumber(`${value.code}${value.number}`, this.metadata);
 
     return phoneNumber
       .formatInternational()
@@ -70,6 +78,6 @@ export class PhoneService {
   }
 
   public getExtPrefix(country: CountryCode) {
-    return getExtPrefix(country, metadata);
+    return getExtPrefix(country, this.metadata);
   }
 }

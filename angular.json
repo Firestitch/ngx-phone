@@ -26,6 +26,11 @@
                 "glob": "**/*",
                 "input": "./node_modules/@firestitch/country/assets/",
                 "output": "./assets/"
+              },
+              {
+                "glob": "metadata.full.json",
+                "input": "./node_modules/libphonenumber-js/",
+                "output": "./assets/"
               }
             ],
             "styles": [

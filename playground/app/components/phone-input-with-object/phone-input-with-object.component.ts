@@ -15,7 +15,7 @@ export class PhoneInputWithObjectComponent {
     number: '2133734253'
   };
 
-  public model = { ...this.input };
+  public model;
 
   constructor() {}
 
