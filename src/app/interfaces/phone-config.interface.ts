@@ -1,4 +1,4 @@
-export interface PhoneConfigInterface {
+export interface IPhoneConfig {
   maskType: 'us' | 'ru',
   mask: string | null;
 }

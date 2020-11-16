@@ -41,7 +41,7 @@ import { FsCountry, IFsCountry } from '@firestitch/country';
 
 import { CountryCode, PhoneNumber } from 'libphonenumber-js';
 
-import { IPhoneValue } from '../../interfaces/phone-value.interface';
+import { IFsPhoneValue } from '../../interfaces/phone-value.interface';
 import { PhoneService } from '../../services/phone.service';
 import { PhoneMetadataService } from '../../services/phone-metadata.service';
 
@@ -58,7 +58,7 @@ import { PhoneMetadataService } from '../../services/phone-metadata.service';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FsPhoneFieldComponent
-  implements OnInit, OnDestroy, ControlValueAccessor, MatFormFieldControl<IPhoneValue | string>, Validator {
+  implements OnInit, OnDestroy, ControlValueAccessor, MatFormFieldControl<IFsPhoneValue | string>, Validator {
 
   public static nextId = 0;
 
@@ -112,12 +112,12 @@ export class FsPhoneFieldComponent
   private _placeholder: string;
   private _required = false;
   private _disabled = false;
-  private _writeValue$ = new ReplaySubject<IPhoneValue | string>(1);
+  private _writeValue$ = new ReplaySubject<IFsPhoneValue | string>(1);
   private _destroy$ = new Subject<void>();
 
   // Value Accessor
   private _onTouched = () => {};
-  private _onChange: (value: IPhoneValue | string) => void = () => {};
+  private _onChange: (value: IFsPhoneValue | string) => void = () => {};
 
   constructor(
     @Optional() @Self() public ngControl: NgControl,
@@ -138,8 +138,8 @@ export class FsPhoneFieldComponent
     return this._countriesStore.countries$;
   }
 
-  public get value(): IPhoneValue | string {
-    let value = this.phoneNumberParts.value as IPhoneValue;
+  public get value(): IFsPhoneValue | string {
+    let value = this.phoneNumberParts.value as IFsPhoneValue;
 
     if (this.mode === 'string') {
       // const phoneNumber = value.number.replace(/[^0-9.]/g, '');
@@ -228,11 +228,11 @@ export class FsPhoneFieldComponent
 
   public setDescribedByIds(ids: string[]) { }
 
-  public writeValue(value: IPhoneValue | string) {
+  public writeValue(value: IFsPhoneValue | string) {
     this._writeValue$.next(value);
   }
 
-  public registerOnChange(onChange: (value: IPhoneValue) => void): void {
+  public registerOnChange(onChange: (value: IFsPhoneValue) => void): void {
     this._onChange = onChange;
   }
 
@@ -399,7 +399,7 @@ export class FsPhoneFieldComponent
       })
   }
 
-  private _writeValue(value: IPhoneValue | string) {
+  private _writeValue(value: IFsPhoneValue | string) {
     let phoneNumber: PhoneNumber;
 
     // In case when string received we must parse it before continue

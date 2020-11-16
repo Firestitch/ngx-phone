@@ -1,4 +1,4 @@
-export interface IPhoneValue {
+export interface IFsPhoneValue {
   code?: string;
   number?: string;
   ext?: string;

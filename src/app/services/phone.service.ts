@@ -14,7 +14,7 @@ import {
 
 // import metadata from 'libphonenumber-js/metadata.full.json';
 
-import { IPhoneValue } from '../interfaces/phone-value.interface';
+import { IFsPhoneValue } from '../interfaces/phone-value.interface';
 import { PhoneMetadataService } from './phone-metadata.service';
 
 
@@ -59,7 +59,7 @@ export class PhoneService {
     }
   }
 
-  public isPhoneNumberValid(value: IPhoneValue): boolean {
+  public isPhoneNumberValid(value: IFsPhoneValue): boolean {
     let phoneNumber: PhoneNumber;
 
     try {
@@ -71,7 +71,7 @@ export class PhoneService {
     }
   }
 
-  public formatPhoneNumber(value: IPhoneValue): string {
+  public formatPhoneNumber(value: IFsPhoneValue): string {
     const phoneNumber = parsePhoneNumber(`${value.code}${value.number}`, this.metadata);
 
     return phoneNumber

@@ -1,6 +1,6 @@
 import { Pipe, PipeTransform } from '@angular/core';
 
-import { IPhoneValue } from '../interfaces/phone-value.interface';
+import { IFsPhoneValue } from '../interfaces/phone-value.interface';
 
 
 @Pipe({
@@ -92,7 +92,7 @@ export class FsPhonePipe implements PipeTransform {
     }
   */
 
-  public transform(value: number | string | IPhoneValue): string {
+  public transform(value: number | string | IFsPhoneValue): string {
     if (!value) {
       return '';
     }
@@ -110,7 +110,7 @@ export class FsPhonePipe implements PipeTransform {
     return this._fallbackParse(value);
   }
 
-  private _fallbackParse(value: number | string | IPhoneValue) {
+  private _fallbackParse(value: number | string | IFsPhoneValue) {
     let str: string;
 
     switch (typeof value) {
