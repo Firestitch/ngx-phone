@@ -139,11 +139,11 @@ export class FsPhoneFieldComponent
   }
 
   public get value(): IPhoneValue | string {
-    const value = this.phoneNumberParts.value as IPhoneValue;
+    let value = this.phoneNumberParts.value as IPhoneValue;
 
     if (this.mode === 'string') {
-      const phoneNumber = value.number.replace(/[^0-9.]/g, '');
-      let phoneNumberString = `${value.code}${phoneNumber}`;
+      // const phoneNumber = value.number.replace(/[^0-9.]/g, '');
+      let phoneNumberString = `${value.code}${value.number}`;
 
       if (value.ext && this.countryControl.value) {
         phoneNumberString += ` ${this._phone.getExtPrefix(this.countryControl.value)} ${value.ext}`
@@ -151,8 +151,18 @@ export class FsPhoneFieldComponent
 
       return phoneNumberString;
     } else {
-      if (value.number) {
-        value.number = value.number.replace(/[^0-9.]/g, '');
+      // if (value.number) {
+      //   value.number = value.number.replace(/[^0-9.]/g, '');
+      // }
+
+      if (this.countryControl.value) {
+        const country = this._countriesStore.countryByCode(this.countryControl.value)
+
+        value = {
+          ...value,
+          country: country.code,
+          countryEmoji: country.emoji,
+        };
       }
 
       return value;

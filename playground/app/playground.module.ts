@@ -16,6 +16,7 @@ import { FirstExampleComponent } from './components/first-example/first-example.
 import { PhoneInputWithObjectComponent } from './components/phone-input-with-object/phone-input-with-object.component';
 import { PhoneInputWithStringComponent } from './components/phone-input-with-string/phone-input-with-string.component';
 import { PhoneInputWithStringModeComponent } from './components/phone-input-with-string-mode/phone-input-with-string-mode.component';
+import { PhoneDisplayComponent } from './components/phone-display/phone-display.component';
 
 
 @NgModule({
@@ -40,6 +41,7 @@ import { PhoneInputWithStringModeComponent } from './components/phone-input-with
     PhoneInputWithObjectComponent,
     PhoneInputWithStringComponent,
     PhoneInputWithStringModeComponent,
+    PhoneDisplayComponent,
   ],
   providers: [],
 })

@@ -5,7 +5,8 @@ import {
   formatIncompletePhoneNumber,
   parsePhoneNumber,
   getExtPrefix,
-  PhoneNumber, Metadata,
+  PhoneNumber,
+  Metadata,
 } from 'libphonenumber-js/core';
 
 // import * as phNumber from 'libphonenumber-js/es6/PhoneNumber';
@@ -17,7 +18,9 @@ import { IPhoneValue } from '../interfaces/phone-value.interface';
 import { PhoneMetadataService } from './phone-metadata.service';
 
 
-@Injectable()
+@Injectable({
+  providedIn: 'root',
+})
 export class PhoneService {
 
   constructor(private _metadataService: PhoneMetadataService) {
