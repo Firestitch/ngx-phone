@@ -10,9 +10,9 @@
       </mat-select-trigger>
 
       <ng-container *ngFor="let country of countries$ | async">
-        <mat-option *ngIf="!!country.callingCode"
-                    [value]="country.code">
-          {{ country.name }} +{{ country.callingCode }}
+        <mat-option *ngIf="!!country.countryCode"
+                    [value]="country.isoCode">
+          {{ country.name }} +{{ country.countryCode }}
           <span class="fs-phone__country_flag">{{ country.emoji }}</span>
         </mat-option>
       </ng-container>

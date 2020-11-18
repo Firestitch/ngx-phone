@@ -143,7 +143,7 @@ export class FsPhoneFieldComponent
 
     if (this.mode === 'string') {
       // const phoneNumber = value.number.replace(/[^0-9.]/g, '');
-      let phoneNumberString = `${value.code}${value.number}`;
+      let phoneNumberString = `${value.countryCode}${value.number}`;
 
       if (value.ext && this.countryControl.value) {
         phoneNumberString += ` ${this._phone.getExtPrefix(this.countryControl.value)} ${value.ext}`
@@ -159,9 +159,11 @@ export class FsPhoneFieldComponent
         const country = this._countriesStore.countryByCode(this.countryControl.value)
 
         value = {
-          ...value,
-          country: country.code,
-          countryEmoji: country.emoji,
+          countryCode: value.countryCode.replace('+', ''),
+          ext: value.ext,
+          number: value.number,
+          isoCode: country.isoCode,
+          emoji: country.emoji,
         };
       }
 
@@ -195,7 +197,7 @@ export class FsPhoneFieldComponent
   }
 
   public get codeValue(): string {
-    return this.phoneNumberParts.get('code').value;
+    return this.phoneNumberParts.get('countryCode').value;
   }
 
   public get numberValue(): string {
@@ -285,7 +287,7 @@ export class FsPhoneFieldComponent
 
   private _initControls(): void {
     this.phoneNumberParts = this._fb.group({
-      code: '',
+      countryCode: '',
       number: '',
       ext: '',
     });
@@ -339,9 +341,9 @@ export class FsPhoneFieldComponent
         this._updateExt(countryCode as CountryCode);
 
         if (country) {
-          this.phoneNumberParts.patchValue({ code: '+' + country.callingCode });
+          this.phoneNumberParts.patchValue({ countryCode: country.countryCode });
         } else {
-          this.phoneNumberParts.patchValue({ code: '' });
+          this.phoneNumberParts.patchValue({ countryCode: '' });
         }
       });
   }
@@ -407,7 +409,13 @@ export class FsPhoneFieldComponent
     if (typeof value === 'string') {
       phoneNumber = this._phone.parsePhoneNumber(value);
     } else if (value && typeof value === 'object') {
-      phoneNumber = this._phone.parsePhoneNumber(`${value.code}${value.number}`);
+      let countryCode = value.countryCode;
+
+      if (!countryCode && value.isoCode) {
+        countryCode = this._countriesStore.countryByCode(value.isoCode)?.countryCode;
+      }
+
+      phoneNumber = this._phone.parsePhoneNumber(`+${countryCode}${value.number}`);
       phoneNumber.ext = value.ext;
     }
 
@@ -422,7 +430,7 @@ export class FsPhoneFieldComponent
       this.countryControl.patchValue(phoneValueObject.countryCode, { emitEvent: false });
 
       this.phoneNumberParts.patchValue({
-        code: phoneValueObject.code || '',
+        countryCode: phoneValueObject.code || '',
         number: phoneValueObject.number,
         ext: phoneValueObject.ext || '',
       }, { emitEvent: false });

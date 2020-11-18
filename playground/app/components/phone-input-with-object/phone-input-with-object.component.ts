@@ -11,7 +11,7 @@ import { delay } from 'rxjs/operators';
 })
 export class PhoneInputWithObjectComponent {
   public input = {
-    code: '+1',
+    countryCode: '1',
     number: '(213) 373-4253'
   };
 

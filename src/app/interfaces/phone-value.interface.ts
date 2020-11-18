@@ -1,7 +1,7 @@
 export interface IFsPhoneValue {
-  code?: string;
+  countryCode?: string;
   number?: string;
   ext?: string;
-  country?: string;
-  countryEmoji?: string;
+  isoCode?: string;
+  emoji?: string;
 }

@@ -119,10 +119,10 @@ export class FsPhonePipe implements PipeTransform {
       } break;
 
       case 'object': {
-        str = `${value.code} ${value.number}`;
+        str = `${value.countryCode} ${value.number}`;
 
-        if (value.countryEmoji) {
-          str = `${value.countryEmoji} ${str}`;
+        if (value.emoji) {
+          str = `${value.emoji} ${str}`;
         }
 
         if (value.ext) {

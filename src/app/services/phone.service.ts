@@ -63,7 +63,7 @@ export class PhoneService {
     let phoneNumber: PhoneNumber;
 
     try {
-      phoneNumber = parsePhoneNumber(value.code + value.number, this.metadata);
+      phoneNumber = parsePhoneNumber(value.countryCode + value.number, this.metadata);
 
       return phoneNumber.isValid() || phoneNumber.isPossible();
     } catch (e) {
@@ -72,11 +72,11 @@ export class PhoneService {
   }
 
   public formatPhoneNumber(value: IFsPhoneValue): string {
-    const phoneNumber = parsePhoneNumber(`${value.code}${value.number}`, this.metadata);
+    const phoneNumber = parsePhoneNumber(`${value.countryCode}${value.number}`, this.metadata);
 
     return phoneNumber
       .formatInternational()
-      .replace(value.code, '')
+      .replace(value.countryCode, '')
       .trim();
   }
 
