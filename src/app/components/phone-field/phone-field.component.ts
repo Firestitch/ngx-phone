@@ -156,7 +156,7 @@ export class FsPhoneFieldComponent
       // }
 
       if (this.countryControl.value) {
-        const country = this._countriesStore.countryByCode(this.countryControl.value)
+        const country = this._countriesStore.countryByISOCode(this.countryControl.value)
 
         value = {
           countryCode: value.countryCode.replace('+', ''),
@@ -337,7 +337,7 @@ export class FsPhoneFieldComponent
         takeUntil(this._destroy$),
       )
       .subscribe((countryCode) => {
-        const country = this._countriesStore.countryByCode(countryCode);
+        const country = this._countriesStore.countryByISOCode(countryCode);
         this._updateExt(countryCode as CountryCode);
 
         if (country) {
@@ -412,7 +412,7 @@ export class FsPhoneFieldComponent
       let countryCode = value.countryCode;
 
       if (!countryCode && value.isoCode) {
-        countryCode = this._countriesStore.countryByCode(value.isoCode)?.countryCode;
+        countryCode = this._countriesStore.countryByISOCode(value.isoCode)?.countryCode;
       }
 
       phoneNumber = this._phone.parsePhoneNumber(`+${countryCode}${value.number}`);
