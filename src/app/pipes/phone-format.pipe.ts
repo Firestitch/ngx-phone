@@ -1,6 +1,7 @@
 import { Pipe, PipeTransform } from '@angular/core';
 
 import { IFsPhoneValue } from '../interfaces/phone-value.interface';
+import { formatPhoneNumber } from '../helpers/format-phone-number';
 
 
 @Pipe({
@@ -115,7 +116,7 @@ export class FsPhonePipe implements PipeTransform {
 
     switch (typeof value) {
       case 'number': {
-        str = this._format('' + value);
+        str = formatPhoneNumber('' + value);
       } break;
 
       case 'object': {
@@ -131,33 +132,11 @@ export class FsPhonePipe implements PipeTransform {
       } break;
 
       default: {
-        str = this._format(value);
+        str = formatPhoneNumber(value);
       }
     }
 
     return str;
-  }
-
-  private _format(str: string) {
-    const cleaned = str.replace(/\D/g, '');
-
-    if (!cleaned.length) {
-      return '';
-    }
-
-    const match = cleaned.match(/^(\d{0,3})(\d{0,3})(\d{0,4})(\d*)/);
-
-    let formatted = '';
-
-    if (match) {
-      formatted = '(' + match[1] + ') ' + match[2] + '-' + match[3];
-
-      if (match[4]) {
-        formatted += ' ext. ' + match[4];
-      }
-    }
-
-    return formatted;
   }
 }
 
