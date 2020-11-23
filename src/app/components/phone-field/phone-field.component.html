@@ -6,14 +6,16 @@
                 panelClass="fs-phone__country"
                 #countryInput>
       <mat-select-trigger>
-        {{ countryControl.value | fsCountryCallingCode }}
+        <fs-country-phone-code [code]="countryControl.value"></fs-country-phone-code>
       </mat-select-trigger>
 
       <ng-container *ngFor="let country of countries$ | async">
         <mat-option *ngIf="!!country.countryCode"
                     [value]="country.isoCode">
           {{ country.name }} +{{ country.countryCode }}
-          <span class="fs-phone__country_flag">{{ country.emoji }}</span>
+          <fs-country-flag class="fs-phone__country_flag"
+                                 [code]="country.isoCode">
+          </fs-country-flag>
         </mat-option>
       </ng-container>
     </mat-select>

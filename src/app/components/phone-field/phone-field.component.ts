@@ -313,7 +313,7 @@ export class FsPhoneFieldComponent
         takeUntil(this._destroy$),
       )
       .subscribe((value: any) => {
-        if (value.code && value.number && value.number.length > 0) {
+        if (value.countryCode && value.number && value.number.length > 0) {
           const formattedValue = this._phone
             .formatIncompletePhoneNumber(value.number, this.countryControl.value as CountryCode);
 
@@ -336,9 +336,9 @@ export class FsPhoneFieldComponent
         distinctUntilChanged(),
         takeUntil(this._destroy$),
       )
-      .subscribe((countryCode) => {
-        const country = this._countriesStore.countryByISOCode(countryCode);
-        this._updateExt(countryCode as CountryCode);
+      .subscribe((isoCode) => {
+        const country = this._countriesStore.countryByISOCode(isoCode);
+        this._updateExt(isoCode as CountryCode);
 
         if (country) {
           this.phoneNumberParts.patchValue({ countryCode: country.countryCode });
