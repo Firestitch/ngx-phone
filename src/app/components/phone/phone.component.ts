@@ -32,6 +32,10 @@ export class FsPhoneComponent implements OnChanges {
     return typeof this.phone === 'object';
   }
 
+  public get phoneISOCode(): string {
+    return (this.phone as IFsPhoneValue).isoCode;
+  }
+
   public ngOnChanges(changes: SimpleChanges) {
     this._formattedPhone = this._parsePhone(this.phone);
   }
