@@ -63,7 +63,13 @@ export class PhoneService {
     let phoneNumber: PhoneNumber;
 
     try {
-      phoneNumber = parsePhoneNumber('+' + value.countryCode + value.number, this.metadata);
+      let phone = value.countryCode + value.number;
+
+      if (value.countryCode.indexOf('+') !== 0) {
+        phone = `+${phone}`;
+      }
+
+      phoneNumber = parsePhoneNumber(phone, this.metadata);
 
       return phoneNumber.isValid() || phoneNumber.isPossible();
     } catch (e) {
