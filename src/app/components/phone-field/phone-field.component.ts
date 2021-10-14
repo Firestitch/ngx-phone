@@ -409,19 +409,19 @@ export class FsPhoneFieldComponent
     if (typeof value === 'string') {
       phoneNumber = this._phone.parsePhoneNumber(value);
     } else if (value && typeof value === 'object') {
-      let countryCode = value.countryCode;
 
-      if (!countryCode && value.isoCode) {
-        countryCode = this._countriesStore.countryByISOCode(value.isoCode)?.countryCode;
+      if (value.isoCode) {
+        phoneNumber = this._phone.parsePhoneNumber(value.number.toString(), value.isoCode as CountryCode);
+      } else {
+        phoneNumber = this._phone.parsePhoneNumber(`+${value.countryCode}${value.number}`);
       }
 
-      phoneNumber = this._phone.parsePhoneNumber(`+${countryCode}${value.number}`);
       phoneNumber.ext = value.ext;
     }
 
     // If transformed to PhoneNumber correctly
     if (phoneNumber) {
-      if (!phoneNumber.isValid()) {
+      if (!phoneNumber.isPossible()) {
         throw Error('Invalid phone number');
       }
 

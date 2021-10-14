@@ -6,7 +6,7 @@ import { switchMap } from 'rxjs/operators';
 
 import { delayedRetry } from '@firestitch/common';
 
-import { Metadata } from 'libphonenumber-js/types';
+import { MetadataJson } from 'libphonenumber-js';
 
 import { FS_PHONE_CONFIG } from '../providers/phone-config';
 import { IFsPhoneConfig } from '../interfaces/phone-config.interface';
@@ -19,7 +19,7 @@ const DEFAULT_LOAD_PATH = '/assets/metadata.full.json';
 })
 export class PhoneMetadataService {
 
-  private _metadata = new BehaviorSubject<Metadata>(null);
+  private _metadata = new BehaviorSubject<MetadataJson>(null);
   private _ready$ = new BehaviorSubject<boolean>(false);
 
   constructor(
@@ -36,11 +36,11 @@ export class PhoneMetadataService {
     return this._ready$.asObservable();
   }
 
-  public get metadata$(): Observable<Metadata> {
+  public get metadata$(): Observable<MetadataJson> {
     return this._metadata.asObservable();
   }
 
-  public get metadata(): Metadata {
+  public get metadata(): MetadataJson {
     return this._metadata.getValue();
   }
 
@@ -51,7 +51,7 @@ export class PhoneMetadataService {
         delayedRetry(2000, 3)
       )
       .subscribe({
-        next: (data: Metadata) => {
+        next: (data: MetadataJson) => {
           this._metadata.next(data);
           this._ready$.next(true)
         },

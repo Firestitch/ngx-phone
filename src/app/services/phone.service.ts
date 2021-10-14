@@ -6,7 +6,7 @@ import {
   parsePhoneNumber,
   getExtPrefix,
   PhoneNumber,
-  Metadata,
+  MetadataJson,
 } from 'libphonenumber-js/core';
 
 // import * as phNumber from 'libphonenumber-js/es6/PhoneNumber';
@@ -26,7 +26,7 @@ export class PhoneService {
   constructor(private _metadataService: PhoneMetadataService) {
   }
 
-  public get metadata(): Metadata {
+  public get metadata(): MetadataJson {
     return this._metadataService.metadata;
   }
 
@@ -38,11 +38,13 @@ export class PhoneService {
     return result;
   }
 
-  public parsePhoneNumber(value: string): PhoneNumber {
+  public parsePhoneNumber(value: string, country?: CountryCode): PhoneNumber {
     let phoneNumber: PhoneNumber;
 
     try {
-       phoneNumber = parsePhoneNumber(value, this.metadata);
+       phoneNumber = !!country
+         ? parsePhoneNumber(value, country, this.metadata)
+         : parsePhoneNumber(value, this.metadata);
     } catch (e) {
       throw new Error('Can not parse passed phone number. ' + e)
     }
