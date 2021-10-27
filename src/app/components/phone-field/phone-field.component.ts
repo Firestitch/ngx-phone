@@ -341,7 +341,7 @@ export class FsPhoneFieldComponent
         this._updateExt(isoCode as CountryCode);
 
         if (country) {
-          this.phoneNumberParts.patchValue({ countryCode: country.countryCode });
+          this.phoneNumberParts.patchValue({ countryCode: `+${country.countryCode}` });
         } else {
           this.phoneNumberParts.patchValue({ countryCode: '' });
         }

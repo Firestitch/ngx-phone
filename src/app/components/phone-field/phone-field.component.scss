@@ -1,9 +1,9 @@
 :host {
   display: block;
-  width: 200px;
+  width: auto;
 
   &.with-number-extention {
-    width: 270px;
+    width: 250px;
   }
 }
 
@@ -25,14 +25,14 @@
   align-items: baseline;
 
   .phone-code {
-    min-width: 75px;
+    min-width: 38px;
     width: auto;
   }
 
   .phone-number {
     width: 110px;
     min-width: 110px;
-    margin-left: 10px;
+    margin-left: 2px;
   }
 
   .ext-number {
