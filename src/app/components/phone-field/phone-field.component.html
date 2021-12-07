@@ -1,5 +1,5 @@
 <ng-container *fsSkeleton="ready$ | async; pattern: [100]">
-  <div class="phone-group" role="group">
+  <div class="phone-group" role="group" [class.with-emoji]="emojiSupported">
     <mat-select class="phone-code"
                 placeholder="Code"
                 [formControl]="countryControl"

@@ -21,8 +21,12 @@
 }
 
 .phone-group {
+  &.with-emoji {
+    align-items: baseline;
+  }
+
   display: flex;
-  align-items: baseline;
+  align-items: center;
 
   .phone-code {
     min-width: 38px;

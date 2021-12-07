@@ -138,6 +138,10 @@ export class FsPhoneFieldComponent
     return this._countriesStore.countries$;
   }
 
+  public get emojiSupported(): boolean {
+    return this._countriesStore.emojiSupported;
+  }
+
   public get value(): IFsPhoneValue | string {
     let value = this.phoneNumberParts.value as IFsPhoneValue;
 
