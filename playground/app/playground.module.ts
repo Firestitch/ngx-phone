@@ -17,6 +17,7 @@ import { PhoneInputWithObjectComponent } from './components/phone-input-with-obj
 import { PhoneInputWithStringComponent } from './components/phone-input-with-string/phone-input-with-string.component';
 import { PhoneInputWithStringModeComponent } from './components/phone-input-with-string-mode/phone-input-with-string-mode.component';
 import { PhoneDisplayComponent } from './components/phone-display/phone-display.component';
+import { FS_PHONE_CONFIG } from '../../src/app/providers/phone-config';
 
 
 @NgModule({
@@ -43,7 +44,14 @@ import { PhoneDisplayComponent } from './components/phone-display/phone-display.
     PhoneInputWithStringModeComponent,
     PhoneDisplayComponent,
   ],
-  providers: [],
+  providers: [
+    {
+      provide: FS_PHONE_CONFIG,
+      useValue: {
+        country: 'CA',
+      },
+    },
+  ],
 })
 export class PlaygroundModule {
 }

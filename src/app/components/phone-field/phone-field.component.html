@@ -1,8 +1,8 @@
 <ng-container *fsSkeleton="ready$ | async; pattern: [100]">
   <div class="phone-group" role="group" [class.with-emoji]="emojiSupported">
     <mat-select class="phone-code"
-                placeholder="Code"
                 [formControl]="countryControl"
+                tabindex="-1"
                 panelClass="fs-phone__country"
                 #countryInput>
       <mat-select-trigger>

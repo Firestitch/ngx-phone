@@ -1,3 +1,5 @@
+import { CountryCode } from 'libphonenumber-js';
+
 export interface IPhoneConfig {
   maskType: 'us' | 'ru',
   mask: string | null;
@@ -5,4 +7,5 @@ export interface IPhoneConfig {
 
 export interface IFsPhoneConfig {
   metadataPath: string;
+  country: CountryCode;
 }
