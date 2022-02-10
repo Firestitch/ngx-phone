@@ -6,30 +6,30 @@
                 panelClass="fs-phone__country"
                 #countryInput>
       <mat-select-trigger>
-        <fs-country-phone-code [code]="countryControl.value" [text]="false"></fs-country-phone-code>
+        <fs-country-phone-code [code]="countryControl.value" [showCode]="false"></fs-country-phone-code>
       </mat-select-trigger>
 
       <ng-container *ngFor="let country of countries$ | async">
         <mat-option *ngIf="!!country.countryCode"
                     [value]="country.isoCode">
-          {{ country.name }} +{{ country.countryCode }}
-          <fs-country-flag class="fs-phone__country_flag"
-                                 [code]="country.isoCode">
+          <fs-country-flag 
+            class="fs-phone__country_flag"
+            [code]="country.isoCode">
           </fs-country-flag>
+          +{{ country.countryCode }} {{ country.name }} 
         </mat-option>
       </ng-container>
     </mat-select>
 
     <ng-container [formGroup]="phoneNumberParts">
-
-      {{codeValue}}
-
-      <input class="phone-number"
-             matInput
-             placeholder="Phone"
-             formControlName="number"
-             maxlength="15"
-             #phoneNumberInput>
+      <span class="code">{{codeValue}}</span>
+      <input 
+        class="phone-number"
+        matInput
+        placeholder="Phone"
+        formControlName="number"
+        maxlength="15"
+        #phoneNumberInput>
 
       <ng-container *ngIf="allowNumberExt && extPrefix">
         <span>{{ extPrefix }}</span>

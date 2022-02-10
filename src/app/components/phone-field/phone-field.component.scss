@@ -1,29 +1,31 @@
 :host {
   display: block;
   width: auto;
-
-  &.with-number-extention {
-    width: 250px;
-  }
 }
 
 ::ng-deep {
-  .fs-phone__country {
-    .mat-option-text {
-      display: inline-flex;
+  .mat-select-value {
+    color: transparent;
+  }
 
-      .fs-phone__country_flag {
-        margin-right: 5px;
-        order: -1;
-      }
+  mat-select-trigger {
+    position: relative;
+
+    fs-country-phone-code {
+      position: relative;
+      top: 1px;
     }
   }
 
-  fs-country-phone-code {
-    width: 21px;
-    justify-content: end;
+  input.mat-input-element {
+    margin-top: 0;
   }
 }
+
+.code {
+  margin-right: 2px;
+}
+
 
 .phone-group {
   &.with-emoji {
@@ -38,7 +40,8 @@
     width: auto;
   }
 
-  .phone-number {
+  .phone-num
+  ber {
     width: 110px;
     min-width: 110px;
     margin-left: 4px;
@@ -46,6 +49,7 @@
 
   .ext-number {
     margin-left: 5px;
+    width: 50px;
   }
 }
 
