@@ -12,18 +12,18 @@
       <ng-container *ngFor="let country of countries$ | async">
         <mat-option *ngIf="!!country.countryCode"
                     [value]="country.isoCode">
-          <fs-country-flag 
+          <fs-country-flag
             class="fs-phone__country_flag"
             [code]="country.isoCode">
           </fs-country-flag>
-          +{{ country.countryCode }} {{ country.name }} 
+          +{{ country.countryCode }} {{ country.name }}
         </mat-option>
       </ng-container>
     </mat-select>
 
     <ng-container [formGroup]="phoneNumberParts">
       <span class="code">{{codeValue}}</span>
-      <input 
+      <input
         class="phone-number"
         matInput
         placeholder="Phone"
