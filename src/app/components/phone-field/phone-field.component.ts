@@ -297,11 +297,6 @@ export class FsPhoneFieldComponent
       )
       .subscribe((origin) => {
         this.focused = !!origin;
-
-        if (!this.focused) {
-          this._onBlur();
-        }
-
         this.stateChanges.next();
       })
   }
@@ -333,7 +328,16 @@ export class FsPhoneFieldComponent
       .pipe(
         takeUntil(this._destroy$),
       )
-      .subscribe(() => {
+      .subscribe((value: any) => {
+        if (value.countryCode && value.number && value.number.length > 0) {
+          const formattedValue = this._phone
+            .formatIncompletePhoneNumber(value.number, this.countryControl.value as CountryCode);
+
+          if (parenthesesClosed(value.number) === parenthesesClosed(formattedValue)) {
+            this._directUpdatePhoneNumberValue(formattedValue);
+          }
+        }
+
         if (this.empty) {
           this._onChange(null);
         } else {
@@ -473,16 +477,5 @@ export class FsPhoneFieldComponent
 
     this.countryControl.setValue(defaultISOCode, { emitEvent: false });
     this._setCountryCode(defaultISOCode, false);
-  }
-
-  private _onBlur(): void {
-    const value = this.phoneNumberParts.value;
-
-    if (value.countryCode && value.number && value.number.length > 0) {
-      const formattedValue = this._phone
-        .formatIncompletePhoneNumber(value.number, this.countryControl.value as CountryCode);
-
-      this._directUpdatePhoneNumberValue(formattedValue);
-    }
   }
 }
