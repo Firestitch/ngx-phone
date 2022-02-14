@@ -47,7 +47,6 @@ import { PhoneService } from '../../services/phone.service';
 import { PhoneMetadataService } from '../../services/phone-metadata.service';
 import { FS_PHONE_CONFIG } from '../../providers/phone-config';
 import { IFsPhoneConfig } from '../../interfaces/phone-config.interface';
-import { parenthesesClosed } from '../../helpers/have-not-closed-parentesis';
 
 
 @Component({
@@ -333,9 +332,7 @@ export class FsPhoneFieldComponent
           const formattedValue = this._phone
             .formatIncompletePhoneNumber(value.number, this.countryControl.value as CountryCode);
 
-          if (parenthesesClosed(value.number) === parenthesesClosed(formattedValue)) {
-            this._directUpdatePhoneNumberValue(formattedValue);
-          }
+          this._directUpdatePhoneNumberValue(formattedValue);
         }
 
         if (this.empty) {
