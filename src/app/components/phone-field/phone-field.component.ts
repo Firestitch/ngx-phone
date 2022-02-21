@@ -40,7 +40,7 @@ import {
 
 import { FsCountry, IFsCountry } from '@firestitch/country';
 
-import { CountryCode, PhoneNumber } from 'libphonenumber-js';
+import { CountryCode, PhoneNumber, validatePhoneNumberLength } from 'libphonenumber-js';
 
 import { IFsPhoneValue } from '../../interfaces/phone-value.interface';
 import { PhoneService } from '../../services/phone.service';
@@ -419,7 +419,11 @@ export class FsPhoneFieldComponent
     // In case when string received we must parse it before continue
     // otherwise we should transform passed object into PhoneNumber instance
     if (typeof value === 'string') {
-      phoneNumber = this._phone.parsePhoneNumber(value);
+      if (validatePhoneNumberLength(value) === 'INVALID_COUNTRY' && this._phoneConfig?.country) {
+        phoneNumber = this._phone.parsePhoneNumber(value, this._phoneConfig?.country);
+      } else {
+        phoneNumber = this._phone.parsePhoneNumber(value);
+      }
     } else if (value && typeof value === 'object') {
 
       if (value.isoCode) {
