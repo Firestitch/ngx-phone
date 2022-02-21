@@ -83,7 +83,7 @@
     "node": ">=6.0.0"
   },
   "peerDependencies": {
-    "libphonenumber-js": ">=1.8.7",
+    "libphonenumber-js": ">=1.9.37",
     "@firestitch/country": ">=10.0.7",
     "@firestitch/skeleton": ">=8.1.4"
   },
