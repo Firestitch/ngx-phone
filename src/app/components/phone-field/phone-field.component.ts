@@ -418,7 +418,7 @@ export class FsPhoneFieldComponent
 
     // In case when string received we must parse it before continue
     // otherwise we should transform passed object into PhoneNumber instance
-    if (typeof value === 'string') {
+    if (typeof value === 'string' || typeof value === 'number') {
       if (validatePhoneNumberLength(value) === 'INVALID_COUNTRY' && this._phoneConfig?.country) {
         phoneNumber = this._phone.parsePhoneNumber(value, this._phoneConfig?.country);
       } else {
