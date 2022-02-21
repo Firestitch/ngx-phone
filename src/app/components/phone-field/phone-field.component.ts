@@ -413,12 +413,16 @@ export class FsPhoneFieldComponent
       })
   }
 
-  private _writeValue(value: IFsPhoneValue | string) {
+  private _writeValue(value: IFsPhoneValue | string | number) {
     let phoneNumber: PhoneNumber;
 
     // In case when string received we must parse it before continue
     // otherwise we should transform passed object into PhoneNumber instance
     if (typeof value === 'string' || typeof value === 'number') {
+      if (typeof value === 'number') {
+        value = value.toString();
+      }
+
       if (validatePhoneNumberLength(value) === 'INVALID_COUNTRY' && this._phoneConfig?.country) {
         phoneNumber = this._phone.parsePhoneNumber(value, this._phoneConfig?.country);
       } else {
