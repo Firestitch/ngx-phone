@@ -2,7 +2,7 @@
   "name": "@firestitch/phone",
   "title": "Phone",
   "description": "@firestitch/phone",
-  "version": "10.1.0",
+  "version": "10.1.1",
   "repository": {
     "type": "git",
     "url": "https://github.com/Firestitch/ngx-phone"
