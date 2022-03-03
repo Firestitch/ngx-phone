@@ -17,3 +17,6 @@ export { IFsPhoneConfig, IPhoneConfig } from './app/interfaces/phone-config.inte
 export { IFsPhoneValue } from './app/interfaces/phone-value.interface';
 
 export { FS_PHONE_CONFIG } from './app/providers/phone-config';
+
+export { extractPhoneData } from './app/helpers/extract-phone-data';
+export { setPhoneData } from './app/helpers/set-phone-data';
