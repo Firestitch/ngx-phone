@@ -176,7 +176,7 @@ export class FsPhoneFieldComponent
         value = {
           countryCode: value.countryCode.replace('+', ''),
           ext: value.ext,
-          number: value.number,
+          number: value.number?.replace(/[^0-9]/g, ''),
           isoCode: country.isoCode,
           emoji: country.emoji,
         };
