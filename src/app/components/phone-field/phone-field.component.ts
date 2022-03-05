@@ -430,13 +430,26 @@ export class FsPhoneFieldComponent
       }
     } else if (value && typeof value === 'object') {
 
-      if (value.isoCode) {
-        phoneNumber = this._phone.parsePhoneNumber(value.number.toString(), value.isoCode as CountryCode);
-      } else {
-        phoneNumber = this._phone.parsePhoneNumber(`+${value.countryCode}${value.number}`);
+      if (this._phoneConfig?.country) {
+        if (!value.countryCode && !value.isoCode) {
+          const country = this._countriesStore.countryByISOCode(this._phoneConfig.country);
+
+          value.countryCode = country.countryCode;
+          value.isoCode = country.isoCode;
+        }
       }
 
-      phoneNumber.ext = value.ext;
+      if (!!value.number) {
+        if (value.isoCode) {
+          phoneNumber = this._phone.parsePhoneNumber(value.number.toString(), value.isoCode as CountryCode);
+        } else if (value.countryCode) {
+          phoneNumber = this._phone.parsePhoneNumber(`+${value.countryCode}${value.number}`);
+        }
+      }
+
+      if (phoneNumber) {
+        phoneNumber.ext = value.ext;
+      }
     }
 
     // If transformed to PhoneNumber correctly
@@ -462,6 +475,8 @@ export class FsPhoneFieldComponent
         number: '',
         ext: '',
       }, { emitEvent: false });
+
+      this._initWithDefaultCountry();
     }
   }
 

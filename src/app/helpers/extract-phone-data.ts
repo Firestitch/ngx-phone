@@ -3,11 +3,19 @@ import { IFsPhoneData } from '../interfaces/entity-with-phone-data';
 
 
 export function extractPhoneData<T extends IFsPhoneData>(obj: T): IFsPhoneValue {
-  const phone: IFsPhoneValue = {
-    number: obj.phone?.toString(),
-    countryCode: obj.phoneCountryCode?.toString(),
-    isoCode: obj.phoneCountry,
-  };
+  const phone: IFsPhoneValue = {};
+
+  if (!!obj.phone) {
+    phone.number = obj.phone?.toString();
+  }
+
+  if (obj.phoneCountryCode) {
+    phone.countryCode = obj.phoneCountryCode?.toString();
+  }
+
+  if (obj.phoneCountry) {
+    phone.isoCode = obj.phoneCountry;
+  }
 
   if (obj.phoneExt) {
     phone.ext = obj.phoneExt;
