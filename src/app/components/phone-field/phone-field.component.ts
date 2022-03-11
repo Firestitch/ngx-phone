@@ -439,6 +439,10 @@ export class FsPhoneFieldComponent
         }
       }
 
+      if (value.isoCode) {
+        this.country = value.isoCode as any;
+      }
+
       if (!!value.number) {
         if (value.isoCode) {
           phoneNumber = this._phone.parsePhoneNumber(value.number.toString(), value.isoCode as CountryCode);
@@ -493,7 +497,7 @@ export class FsPhoneFieldComponent
   }
 
   private _initWithDefaultCountry(): void {
-    const defaultISOCode = this._phoneConfig?.country || this.country || null;
+    const defaultISOCode = this.country || this._phoneConfig?.country || null;
 
     this.countryControl.setValue(defaultISOCode, { emitEvent: false });
     this._setCountryCode(defaultISOCode, false);
