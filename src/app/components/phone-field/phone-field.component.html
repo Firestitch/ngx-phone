@@ -1,19 +1,21 @@
 <ng-container *fsSkeleton="ready$ | async; pattern: [100]">
   <div class="phone-group" role="group" [class.with-emoji]="emojiSupported">
-    <mat-select class="phone-code"
-                [formControl]="countryControl"
-                tabindex="-1"
-                panelClass="fs-phone__country"
-                #countryInput>
+    <mat-select
+        class="phone-code"
+        [formControl]="countryControl"
+        tabindex="-1"
+        panelClass="fs-phone-country-pane"
+        #countryInput>
       <mat-select-trigger>
         <fs-country-phone-code [code]="countryControl.value" [showCode]="false"></fs-country-phone-code>
       </mat-select-trigger>
 
       <ng-container *ngFor="let country of countries$ | async">
-        <mat-option *ngIf="!!country.countryCode"
-                    [value]="country.isoCode">
+        <mat-option 
+            *ngIf="!!country.countryCode"
+            [value]="country.isoCode">
           <fs-country-flag
-            class="fs-phone__country_flag"
+            class="fs-phone-country-flag"
             [code]="country.isoCode">
           </fs-country-flag>
           +{{ country.countryCode }} {{ country.name }}
@@ -33,7 +35,6 @@
 
       <ng-container *ngIf="allowNumberExt && extPrefix">
         <span>{{ extPrefix }}</span>
-
         <input class="ext-number" matInput placeholder="xxx" formControlName="ext" maxlength="5">
       </ng-container>
     </ng-container>

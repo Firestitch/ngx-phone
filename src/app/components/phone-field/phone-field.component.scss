@@ -1,13 +1,15 @@
 :host {
   display: block;
   width: auto;
+
+  ::ng-deep {
+    input.mat-input-element {
+      margin-top: 0;
+    }
+  }
 }
 
-::ng-deep {
-  .mat-select-value {
-    //color: transparent;
-  }
-
+::ng-deep .fs-phone-country-pane {
   mat-select-trigger {
     position: relative;
 
@@ -16,16 +18,11 @@
       top: 1px;
     }
   }
-
-  input.mat-input-element {
-    margin-top: 0;
-  }
 }
 
 .code {
-  margin-right: 2px;
+  margin-right: 5px;
 }
-
 
 .phone-group {
   &.with-emoji {
