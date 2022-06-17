@@ -47,6 +47,7 @@ import { PhoneService } from '../../services/phone.service';
 import { PhoneMetadataService } from '../../services/phone-metadata.service';
 import { FS_PHONE_CONFIG } from '../../providers/phone-config';
 import { IFsPhoneConfig } from '../../interfaces/phone-config.interface';
+import { stringsDiff } from '../../helpers/strings-diff';
 
 
 @Component({
@@ -118,6 +119,7 @@ export class FsPhoneFieldComponent
   private _placeholder: string;
   private _required = false;
   private _disabled = false;
+  private _backspaceWasPressed = false;
   private _writeValue$ = new ReplaySubject<IFsPhoneValue | string>(1);
   private _destroy$ = new Subject<void>();
 
@@ -223,6 +225,11 @@ export class FsPhoneFieldComponent
     return this.phoneNumberParts.get('ext').value;
   }
 
+  private get _numberControlCanBeFormatted(): boolean {
+    const value = this.phoneNumberParts.value;
+
+    return value.countryCode && value.number && value.number.length > 0;
+  }
 
   public ngOnInit(): void {
     this._applyInternalValidation();
@@ -281,6 +288,19 @@ export class FsPhoneFieldComponent
     return isNotValid && validationErrors;
   }
 
+  public backspacePressed(): void {
+    this._backspaceWasPressed = true;
+  }
+
+  public numberInputBlur(): void {
+    if (this._numberControlCanBeFormatted) {
+      const formattedValue = this._phone
+        .formatIncompletePhoneNumber(this.phoneNumberParts.value.number, this.countryControl.value as CountryCode);
+
+      this._directUpdatePhoneNumberValue(formattedValue);
+    }
+  }
+
   private _registerValueAccessor(): void {
     if (this.ngControl != null) {
       // Setting the value accessor directly (instead of using
@@ -328,11 +348,14 @@ export class FsPhoneFieldComponent
         takeUntil(this._destroy$),
       )
       .subscribe((value: any) => {
-        if (value.countryCode && value.number && value.number.length > 0) {
+        if (this._numberControlCanBeFormatted) {
           const formattedValue = this._phone
             .formatIncompletePhoneNumber(value.number, this.countryControl.value as CountryCode);
 
-          this._directUpdatePhoneNumberValue(formattedValue);
+          const strDiff = stringsDiff(formattedValue, value.number);
+          if ([')', '(', '-', ' '].indexOf(strDiff) === -1) {
+            this._directUpdatePhoneNumberValue(formattedValue);
+          }
         }
 
         if (this.empty) {
@@ -341,6 +364,7 @@ export class FsPhoneFieldComponent
           this._onChange(this.value);
         }
 
+        this._backspaceWasPressed = false;
         this.stateChanges.next();
       });
   }

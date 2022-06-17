@@ -11,7 +11,7 @@
       </mat-select-trigger>
 
       <ng-container *ngFor="let country of countries$ | async">
-        <mat-option 
+        <mat-option
             *ngIf="!!country.countryCode"
             [value]="country.isoCode">
           <fs-country-flag
@@ -31,6 +31,8 @@
         placeholder="Phone"
         formControlName="number"
         maxlength="15"
+        (keydown.backspace)="backspacePressed()"
+        (blur)="numberInputBlur()"
         #phoneNumberInput>
 
       <ng-container *ngIf="allowNumberExt && extPrefix">
