@@ -102,7 +102,6 @@ export class FsPhoneFieldComponent
   public phoneNumberParts: FormGroup;
 
   public focused = false;
-  public errorState = false;
   public controlType = 'phone-input';
   public stateChanges = new Subject<void>();
   public extPrefix = '';
@@ -153,6 +152,10 @@ export class FsPhoneFieldComponent
 
   public get emojiSupported(): boolean {
     return this._countriesStore.emojiSupported;
+  }
+
+  public get errorState(): boolean {
+    return this.ngControl.dirty && !this.ngControl.valid;
   }
 
   public get value(): IFsPhoneValue | string {
