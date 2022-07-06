@@ -284,7 +284,7 @@ export class FsPhoneFieldComponent
     if (this.codeValue && this.numberValue) {
       if (!this._phone.isPhoneNumberValid(this.phoneNumberParts.value)) {
         isNotValid = true;
-        validationErrors.invalid = 'Invalid phone number';
+        validationErrors.invalid = 'Invalid number';
       }
     }
 
