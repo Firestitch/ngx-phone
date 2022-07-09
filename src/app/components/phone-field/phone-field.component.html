@@ -28,6 +28,7 @@
       <input
         class="phone-number"
         matInput
+        [name]="name"
         placeholder="Phone"
         formControlName="number"
         maxlength="15"
@@ -37,7 +38,7 @@
 
       <ng-container *ngIf="allowNumberExt && extPrefix">
         <span>{{ extPrefix }}</span>
-        <input class="ext-number" matInput placeholder="xxx" formControlName="ext" maxlength="5">
+        <input class="ext-number" matInput placeholder="xxx" formControlName="ext" maxlength="5" [name]="name + '-ext'">
       </ng-container>
     </ng-container>
   </div>

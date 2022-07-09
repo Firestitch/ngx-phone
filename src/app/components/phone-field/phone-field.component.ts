@@ -96,6 +96,9 @@ export class FsPhoneFieldComponent
   @Input()
   public country: CountryCode = null;
 
+  @Input()
+  public name: string;
+
   @HostBinding()
   public id = `example-tel-input-${FsPhoneFieldComponent.nextId++}`;
 
