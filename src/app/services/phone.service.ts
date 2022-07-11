@@ -8,11 +8,7 @@ import {
   PhoneNumber,
   MetadataJson,
 } from 'libphonenumber-js/core';
-
-// import * as phNumber from 'libphonenumber-js/es6/PhoneNumber';
-// import * as _fr from 'libphonenumber-js/es6/format'
-
-// import metadata from 'libphonenumber-js/metadata.full.json';
+import { AsYouType } from 'libphonenumber-js';
 
 import { IFsPhoneValue } from '../interfaces/phone-value.interface';
 import { PhoneMetadataService } from './phone-metadata.service';
@@ -30,10 +26,18 @@ export class PhoneService {
     return this._metadataService.metadata;
   }
 
-  public formatIncompletePhoneNumber(value: string, country: CountryCode): string {
-    const result = formatIncompletePhoneNumber(value, country, this.metadata);
+  public formatIncompletePhoneNumber(countryCode: string, value: string, country: CountryCode): string {
+    const typed = new AsYouType(country);
+    typed.input(countryCode + value);
+
+    let result = typed.getNumber()
+      ?.formatInternational()
+      .replace(countryCode, '');
 
     if (!result) { return ''; }
+
+    // Double format to fix TA-T1894
+    result = formatIncompletePhoneNumber(result, country, this.metadata)
 
     return result;
   }
@@ -56,7 +60,7 @@ export class PhoneService {
     return {
       code: '+' + n.countryCallingCode,
       countryCode: n.country,
-      number: this.formatIncompletePhoneNumber(n.nationalNumber as string, n.country),
+      number: this.formatIncompletePhoneNumber('+' + n.countryCallingCode, n.nationalNumber as string, n.country),
       ext: n.ext as string,
     }
   }

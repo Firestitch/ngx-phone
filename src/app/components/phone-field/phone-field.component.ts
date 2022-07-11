@@ -300,8 +300,9 @@ export class FsPhoneFieldComponent
 
   public numberInputBlur(): void {
     if (this._numberControlCanBeFormatted) {
+      const n = this.phoneNumberParts.value as IFsPhoneValue;
       const formattedValue = this._phone
-        .formatIncompletePhoneNumber(this.phoneNumberParts.value.number, this.countryControl.value as CountryCode);
+        .formatIncompletePhoneNumber(n.countryCode, n.number, this.countryControl.value as CountryCode);
 
       this._directUpdatePhoneNumberValue(formattedValue);
     }
@@ -356,7 +357,11 @@ export class FsPhoneFieldComponent
       .subscribe((value: any) => {
         if (this._numberControlCanBeFormatted) {
           const formattedValue = this._phone
-            .formatIncompletePhoneNumber(value.number, this.countryControl.value as CountryCode);
+            .formatIncompletePhoneNumber(
+              value.countryCode,
+              value.number,
+              this.countryControl.value as CountryCode
+            );
 
           const strDiff = stringsDiff(formattedValue, value.number);
           if ([')', '(', '-', ' '].indexOf(strDiff) === -1) {
