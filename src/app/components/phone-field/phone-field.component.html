@@ -2,6 +2,7 @@
   <div class="phone-group" role="group" [class.with-emoji]="emojiSupported">
     <mat-select
         class="phone-code"
+        (opened)="countrySelectOpened()"
         [formControl]="countryControl"
         tabindex="-1"
         panelClass="fs-phone-country-pane"
@@ -14,11 +15,12 @@
         <mat-option
             *ngIf="!!country.countryCode"
             [value]="country.isoCode">
+          {{ country.name }}
+          <span class="fs-phone-country-code">&nbsp;+{{ country.countryCode }}&nbsp;</span>
           <fs-country-flag
             class="fs-phone-country-flag"
             [code]="country.isoCode">
           </fs-country-flag>
-          +{{ country.countryCode }} {{ country.name }}
         </mat-option>
       </ng-container>
     </mat-select>

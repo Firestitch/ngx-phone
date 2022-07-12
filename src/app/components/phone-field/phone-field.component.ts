@@ -27,13 +27,15 @@ import { coerceBooleanProperty } from '@angular/cdk/coercion';
 import { FocusMonitor } from '@angular/cdk/a11y';
 
 
-import { combineLatest, Observable, ReplaySubject, Subject } from 'rxjs';
+import { combineLatest, merge, Observable, ReplaySubject, Subject, timer } from 'rxjs';
 import {
   distinctUntilChanged,
   filter,
   map,
+  mapTo,
   shareReplay,
   switchMap,
+  take,
   takeUntil,
   tap,
 } from 'rxjs/operators';
@@ -123,6 +125,8 @@ export class FsPhoneFieldComponent
   private _disabled = false;
   private _backspaceWasPressed = false;
   private _writeValue$ = new ReplaySubject<IFsPhoneValue | string>(1);
+  private _containerClick = new Subject<Element>();
+  private _countrySelectOpened$ = new Subject<null>();
   private _destroy$ = new Subject<void>();
 
   // Value Accessor
@@ -146,6 +150,7 @@ export class FsPhoneFieldComponent
     this._initControls();
     this._registerValueAccessor();
     this._registerFocusMonitor();
+    this._listenContainerClick();
     this._initResourcesReadyState();
   }
 
@@ -251,9 +256,11 @@ export class FsPhoneFieldComponent
   }
 
   public onContainerClick(event: MouseEvent) {
-    if ((event.target as Element).tagName.toLowerCase() !== 'input') {
-      this._phoneNumberInputRef.nativeElement.focus();
-    }
+    this._containerClick.next(event.target as Element);
+  }
+
+  public countrySelectOpened(): void {
+    this._countrySelectOpened$.next();
   }
 
   public setDescribedByIds(ids: string[]) { }
@@ -320,11 +327,37 @@ export class FsPhoneFieldComponent
     this._fm.monitor(this._el, true)
       .pipe(
         filter(() => !this.disabled),
+        takeUntil(this._destroy$),
       )
       .subscribe((origin) => {
         this.focused = !!origin;
         this.stateChanges.next();
-      })
+      });
+  }
+
+  private _listenContainerClick(): void {
+    this._containerClick
+      .pipe(
+        filter(() => !this.disabled),
+        filter((target: Element) => {
+          return target.tagName.toLowerCase() !== 'input'
+        }),
+        switchMap(() =>
+          merge(
+            timer(200).pipe(mapTo(false)),
+            this._countrySelectOpened$.pipe(mapTo(true))
+          ).pipe(
+            take(1),
+          )
+        ),
+        tap((isSelectClick: boolean) => {
+          if (!isSelectClick) {
+            this._phoneNumberInputRef.nativeElement.focus();
+          }
+        }),
+        takeUntil(this._destroy$),
+      )
+      .subscribe()
   }
 
   private _initControls(): void {

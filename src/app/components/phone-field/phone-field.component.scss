@@ -18,6 +18,18 @@
       top: 1px;
     }
   }
+
+  .mat-option-text {
+    display: inline-flex;
+
+    .fs-phone-country-code {
+      order: -1;
+    }
+
+    .fs-phone-country-flag {
+      order: -2;
+    }
+  }
 }
 
 .code {
@@ -37,8 +49,7 @@
     width: auto;
   }
 
-  .phone-num
-  ber {
+  .phone-number {
     width: 110px;
     min-width: 110px;
     margin-left: 4px;
