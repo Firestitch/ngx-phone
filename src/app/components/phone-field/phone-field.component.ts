@@ -107,6 +107,7 @@ export class FsPhoneFieldComponent
   public phoneNumberParts: FormGroup;
 
   public focused = false;
+  public touched = false;
   public controlType = 'phone-input';
   public stateChanges = new Subject<void>();
   public extPrefix = '';
@@ -149,7 +150,6 @@ export class FsPhoneFieldComponent
   ) {
     this._initControls();
     this._registerValueAccessor();
-    this._registerFocusMonitor();
     this._listenContainerClick();
     this._initResourcesReadyState();
   }
@@ -315,24 +315,28 @@ export class FsPhoneFieldComponent
     }
   }
 
+  public onFocusIn(event: FocusEvent) {
+    if (!this.focused) {
+      this.focused = true;
+      this.stateChanges.next();
+    }
+  }
+
+  public onFocusOut(event: FocusEvent) {
+    if (!this._el.nativeElement.contains(event.relatedTarget as Element)) {
+      this.touched = true;
+      this.focused = false;
+      this._onTouched();
+      this.stateChanges.next();
+    }
+  }
+
   private _registerValueAccessor(): void {
     if (this.ngControl != null) {
       // Setting the value accessor directly (instead of using
       // the providers) to avoid running into a circular import.
       this.ngControl.valueAccessor = this;
     }
-  }
-
-  private _registerFocusMonitor(): void {
-    this._fm.monitor(this._el, true)
-      .pipe(
-        filter(() => !this.disabled),
-        takeUntil(this._destroy$),
-      )
-      .subscribe((origin) => {
-        this.focused = !!origin;
-        this.stateChanges.next();
-      });
   }
 
   private _listenContainerClick(): void {
@@ -352,7 +356,7 @@ export class FsPhoneFieldComponent
         ),
         tap((isSelectClick: boolean) => {
           if (!isSelectClick) {
-            this._phoneNumberInputRef.nativeElement.focus();
+              this._fm.focusVia(this._phoneNumberInputRef, 'program');
           }
         }),
         takeUntil(this._destroy$),
@@ -455,7 +459,9 @@ export class FsPhoneFieldComponent
 
       // Restore cursor position
       setTimeout(() => {
-        this._phoneNumberInputRef.nativeElement.setSelectionRange(cursorPosition, cursorPosition);
+        if (this.focused) {
+          this._phoneNumberInputRef.nativeElement.setSelectionRange(cursorPosition, cursorPosition);
+        }
       }, 5);
     }
   }

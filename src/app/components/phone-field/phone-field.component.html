@@ -1,5 +1,8 @@
 <ng-container *fsSkeleton="ready$ | async; pattern: [100]">
-  <div class="phone-group" role="group" [class.with-emoji]="emojiSupported">
+  <div class="phone-group" role="group"
+       [class.with-emoji]="emojiSupported"
+       (focusin)="onFocusIn($event)"
+       (focusout)="onFocusOut($event)">
     <mat-select
         class="phone-code"
         (opened)="countrySelectOpened()"
