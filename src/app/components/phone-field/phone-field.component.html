@@ -6,12 +6,16 @@
     <mat-select
         class="phone-code"
         (opened)="countrySelectOpened()"
+        (selectionChange)="countrySelectionChange()"
         [formControl]="countryControl"
         tabindex="-1"
         panelClass="fs-phone-country-pane"
         #countryInput>
       <mat-select-trigger>
-        <fs-country-phone-code [code]="countryControl.value" [showCode]="false"></fs-country-phone-code>
+        <fs-country-phone-code 
+          [code]="countryControl.value" 
+          [showCode]="false">
+        </fs-country-phone-code>
       </mat-select-trigger>
 
       <ng-container *ngFor="let country of countries$ | async">
@@ -36,14 +40,19 @@
         [name]="name"
         placeholder="Phone"
         formControlName="number"
-        maxlength="15"
-        (keydown.backspace)="backspacePressed()"
-        (blur)="numberInputBlur()"
+        (keyup)="phoneKeyup($event)"
         #phoneNumberInput>
 
       <ng-container *ngIf="allowNumberExt && extPrefix">
         <span>{{ extPrefix }}</span>
-        <input class="ext-number" matInput placeholder="xxx" formControlName="ext" maxlength="5" [name]="name + '-ext'">
+        <input 
+          #extNumberInput
+        (keyup)="extKeyup($event)"
+          class="ext-number" 
+          matInput 
+          placeholder="xxx" 
+          formControlName="ext" 
+          [name]="name + '-ext'">
       </ng-container>
     </ng-container>
   </div>

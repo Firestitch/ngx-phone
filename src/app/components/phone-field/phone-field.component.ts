@@ -42,24 +42,22 @@ import {
 
 import { FsCountry, IFsCountry } from '@firestitch/country';
 
-import { CountryCode, PhoneNumber, validatePhoneNumberLength } from 'libphonenumber-js';
+import { CountryCode, PhoneNumber, validatePhoneNumberLength, AsYouType } from 'libphonenumber-js';
 
 import { IFsPhoneValue } from '../../interfaces/phone-value.interface';
 import { PhoneService } from '../../services/phone.service';
 import { PhoneMetadataService } from '../../services/phone-metadata.service';
-import { FS_PHONE_CONFIG } from '../../providers/phone-config';
 import { IFsPhoneConfig } from '../../interfaces/phone-config.interface';
-import { stringsDiff } from '../../helpers/strings-diff';
+import { PHONE_CONFIG } from '../../providers';
+import { MatInput } from '@angular/material/input';
 
 
 @Component({
   selector: 'fs-phone-field',
   templateUrl: './phone-field.component.html',
-  styleUrls: [
-    './phone-field.component.scss',
-  ],
+  styleUrls: [ './phone-field.component.scss' ],
   providers: [
-    {provide: MatFormFieldControl, useExisting: FsPhoneFieldComponent},
+    { provide: MatFormFieldControl, useExisting: FsPhoneFieldComponent },
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
@@ -96,7 +94,7 @@ export class FsPhoneFieldComponent
   public mode: 'string' | 'object' = 'object';
 
   @Input()
-  public country: CountryCode = null;
+  public country: CountryCode;
 
   @Input()
   public name: string;
@@ -114,17 +112,16 @@ export class FsPhoneFieldComponent
   public countryControl = new FormControl('');
   public ready$: Observable<boolean>;
 
+  @ViewChild('extNumberInput')
+  private _extNumberInputRef: ElementRef;
+
   @ViewChild('phoneNumberInput')
   private _phoneNumberInputRef: ElementRef;
-
-  @ViewChild('countryInput', { read: ElementRef })
-  private _countryInputRef: ElementRef;
 
   private _externalDataReady = false;
   private _placeholder: string;
   private _required = false;
   private _disabled = false;
-  private _backspaceWasPressed = false;
   private _writeValue$ = new ReplaySubject<IFsPhoneValue | string>(1);
   private _containerClick = new Subject<Element>();
   private _countrySelectOpened$ = new Subject<null>();
@@ -145,7 +142,7 @@ export class FsPhoneFieldComponent
     private _countriesStore: FsCountry,
     private _metadata: PhoneMetadataService,
     @Optional()
-    @Inject(FS_PHONE_CONFIG)
+    @Inject(PHONE_CONFIG)
     private readonly _phoneConfig: IFsPhoneConfig,
   ) {
     this._initControls();
@@ -156,6 +153,14 @@ export class FsPhoneFieldComponent
 
   public get countries$(): Observable<IFsCountry[]> {
     return this._countriesStore.countries$;
+  }
+
+  public get phoneNumberEl() {
+    return this._phoneNumberInputRef.nativeElement;
+  }
+
+  public get extNumberEl() {
+    return this._extNumberInputRef.nativeElement;
   }
 
   public get emojiSupported(): boolean {
@@ -179,10 +184,6 @@ export class FsPhoneFieldComponent
 
       return phoneNumberString;
     } else {
-      // if (value.number) {
-      //   value.number = value.number.replace(/[^0-9.]/g, '');
-      // }
-
       if (this.countryControl.value) {
         const country = this._countriesStore.countryByISOCode(this.countryControl.value)
 
@@ -236,13 +237,8 @@ export class FsPhoneFieldComponent
     return this.phoneNumberParts.get('ext').value;
   }
 
-  private get _numberControlCanBeFormatted(): boolean {
-    const value = this.phoneNumberParts.value;
-
-    return value.countryCode && value.number && value.number.length > 0;
-  }
-
   public ngOnInit(): void {
+    this._initDefaultCountry();
     this._applyInternalValidation();
     this._listenWriteValue();
     this._listenPhonePartsChanges();
@@ -253,6 +249,49 @@ export class FsPhoneFieldComponent
   public ngOnDestroy(): void {
     this._fm.stopMonitoring(this._el);
     this.stateChanges.complete();
+  }
+
+  public formatInput(): void {
+    if(this.phoneNumberEl) {
+      const asYouType = new AsYouType(this.countryControl.value);
+      const formatted = asYouType.input(this.phoneNumberEl.value);
+      this.phoneNumberEl.value = formatted;
+    }
+  }
+
+  public phoneKeyup(event: KeyboardEvent): void {
+    try {
+      let input = this.phoneNumberEl;
+      const value = input.value;
+      const selection = input.value.length === input.selectionStart ? null : input.selectionStart;
+      const asYouType = new AsYouType(this.countryControl.value);
+      const formatted = asYouType.input(value);
+      
+      if(event.code === 'Backspace') {
+        if(!formatted.match(/\d$/)) {
+          return;
+        }
+      }
+      
+      input.value = formatted;
+
+      if(selection !==null) {
+        input.setSelectionRange(selection, selection);
+      }
+
+      if(this.allowNumberExt && event.key.match(/\d/) && asYouType.isValid()) {
+        this.extNumberEl.focus();
+      }
+    } catch (error) {
+    }
+  }
+
+  public extKeyup(event: KeyboardEvent): void {
+    if(event.code === 'Backspace') {
+      if(this.extNumberEl.selectionStart === 0) {
+        this.phoneNumberEl.focus();
+      }
+    }
   }
 
   public onContainerClick(event: MouseEvent) {
@@ -278,7 +317,6 @@ export class FsPhoneFieldComponent
   }
 
   public validate({ value }: FormControl) {
-
     const validationErrors: ValidationErrors = {};
     let isNotValid = false;
 
@@ -301,20 +339,6 @@ export class FsPhoneFieldComponent
     return isNotValid && validationErrors;
   }
 
-  public backspacePressed(): void {
-    this._backspaceWasPressed = true;
-  }
-
-  public numberInputBlur(): void {
-    if (this._numberControlCanBeFormatted) {
-      const n = this.phoneNumberParts.value as IFsPhoneValue;
-      const formattedValue = this._phone
-        .formatIncompletePhoneNumber(n.countryCode, n.number, this.countryControl.value as CountryCode);
-
-      this._directUpdatePhoneNumberValue(formattedValue);
-    }
-  }
-
   public onFocusIn(event: FocusEvent) {
     if (!this.focused) {
       this.focused = true;
@@ -329,6 +353,10 @@ export class FsPhoneFieldComponent
       this._onTouched();
       this.stateChanges.next();
     }
+  }
+
+  public countrySelectionChange() {
+    this.formatInput();
   }
 
   private _registerValueAccessor(): void {
@@ -364,6 +392,10 @@ export class FsPhoneFieldComponent
       .subscribe()
   }
 
+  private _initDefaultCountry(): void {
+    this.country = this.country || this._phoneConfig?.isoCountryCode;
+  }
+
   private _initControls(): void {
     this.phoneNumberParts = this._fb.group({
       countryCode: '',
@@ -392,27 +424,12 @@ export class FsPhoneFieldComponent
         takeUntil(this._destroy$),
       )
       .subscribe((value: any) => {
-        if (this._numberControlCanBeFormatted) {
-          const formattedValue = this._phone
-            .formatIncompletePhoneNumber(
-              value.countryCode,
-              value.number,
-              this.countryControl.value as CountryCode
-            );
-
-          const strDiff = stringsDiff(formattedValue, value.number);
-          if ([')', '(', '-', ' '].indexOf(strDiff) === -1) {
-            this._directUpdatePhoneNumberValue(formattedValue);
-          }
-        }
-
         if (this.empty) {
           this._onChange(null);
         } else {
           this._onChange(this.value);
         }
 
-        this._backspaceWasPressed = false;
         this.stateChanges.next();
       });
   }
@@ -423,8 +440,8 @@ export class FsPhoneFieldComponent
         distinctUntilChanged(),
         takeUntil(this._destroy$),
       )
-      .subscribe((isoCode) => {
-        this._setCountryCode(isoCode);
+      .subscribe((countryCode: CountryCode) => {
+        this._setCountryCode(countryCode);       
       });
   }
 
@@ -444,29 +461,7 @@ export class FsPhoneFieldComponent
     }
   }
 
-  private _directUpdatePhoneNumberValue(value: string) {
-    if (this._phoneNumberInputRef) {
-      // For cases when we have moved from simple string to formatted to save cursor position correct
-      // ex. 23 => (234)
-      const prevValueLength = this._phoneNumberInputRef.nativeElement.value.length;
-      const newValueLength = value.length;
-
-      const cursorPosition = this._phoneNumberInputRef.nativeElement.selectionStart
-        + (newValueLength - prevValueLength);
-
-      // Update input value
-      this._phoneNumberInputRef.nativeElement.value = value;
-
-      // Restore cursor position
-      setTimeout(() => {
-        if (this.focused) {
-          this._phoneNumberInputRef.nativeElement.setSelectionRange(cursorPosition, cursorPosition);
-        }
-      }, 5);
-    }
-  }
-
-  private _updateExt(code: CountryCode) {
+  private _updateExt(code: CountryCode) {6
     this.extPrefix = this._phone.getExtPrefix(code);
   }
 
@@ -497,33 +492,15 @@ export class FsPhoneFieldComponent
         value = value.toString();
       }
 
-      if (validatePhoneNumberLength(value) === 'INVALID_COUNTRY' && this._phoneConfig?.country) {
-        phoneNumber = this._phone.parsePhoneNumber(value, this._phoneConfig?.country);
-      } else {
-        phoneNumber = this._phone.parsePhoneNumber(value);
-      }
+      try {
+        phoneNumber = this._phone.parsePhoneNumber(value, this.country);
+      } catch(e) {}
     } else if (value && typeof value === 'object') {
-
-      if (this._phoneConfig?.country) {
-        if (!value.countryCode && !value.isoCode) {
-          const country = this._countriesStore.countryByISOCode(this._phoneConfig.country);
-
-          value.countryCode = country.countryCode;
-          value.isoCode = country.isoCode;
-        }
-      }
-
       if (value.isoCode) {
         this.country = value.isoCode as any;
       }
 
-      if (!!value.number) {
-        if (value.isoCode) {
-          phoneNumber = this._phone.parsePhoneNumber(value.number.toString(), value.isoCode as CountryCode);
-        } else if (value.countryCode) {
-          phoneNumber = this._phone.parsePhoneNumber(`+${value.countryCode}${value.number}`);
-        }
-      }
+      phoneNumber = this._phone.parsePhoneNumber(`+${value.countryCode}${value.number.toString()}`, this.country);
 
       if (phoneNumber) {
         phoneNumber.ext = value.ext;
@@ -536,17 +513,7 @@ export class FsPhoneFieldComponent
         throw Error('Invalid phone number');
       }
 
-      const phoneValueObject = this._phone.phoneNumberToPhoneValueObject(phoneNumber);
-
-      this.countryControl.patchValue(phoneValueObject.countryCode, { emitEvent: false });
-
-      this.phoneNumberParts.patchValue({
-        countryCode: phoneValueObject.code || '',
-        number: phoneValueObject.number,
-        ext: phoneValueObject.ext || '',
-      }, { emitEvent: false });
-
-      this._updateExt(phoneValueObject.countryCode as CountryCode);
+      this._setPhoneNumber(phoneNumber, false);
     } else {
       this.phoneNumberParts.reset({
         code: '',
@@ -558,8 +525,19 @@ export class FsPhoneFieldComponent
     }
   }
 
+  private _setPhoneNumber(phoneNumber: PhoneNumber, emitEvent = true): void {
+    this.phoneNumberParts.patchValue({
+      countryCode: phoneNumber.countryCallingCode || '',
+      number: this._phone.formatIncompletePhoneNumber('+' + phoneNumber.countryCallingCode, phoneNumber.nationalNumber as string, phoneNumber.country),
+      ext: phoneNumber.ext || '',
+    }, { emitEvent: emitEvent });
+
+    this._setCountryCode(phoneNumber.country);
+  }
+
   private _setCountryCode(isoCode: CountryCode, emitEvent = true): void {
     const country = this._countriesStore.countryByISOCode(isoCode);
+    this.countryControl.patchValue(isoCode, { emitEvent: emitEvent });
 
     this._updateExt(isoCode);
 
@@ -571,9 +549,7 @@ export class FsPhoneFieldComponent
   }
 
   private _initWithDefaultCountry(): void {
-    const defaultISOCode = this.country || this._phoneConfig?.country || null;
-
-    this.countryControl.setValue(defaultISOCode, { emitEvent: false });
-    this._setCountryCode(defaultISOCode, false);
+    this.countryControl.setValue(this.country, { emitEvent: false });
+    this._setCountryCode(this.country, false);
   }
 }

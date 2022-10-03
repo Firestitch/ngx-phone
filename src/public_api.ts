@@ -16,7 +16,7 @@ export { PhoneService } from './app/services/phone.service';
 export { IFsPhoneConfig, IPhoneConfig } from './app/interfaces/phone-config.interface';
 export { IFsPhoneValue } from './app/interfaces/phone-value.interface';
 
-export { FS_PHONE_CONFIG } from './app/providers/phone-config';
+export { FS_PHONE_CONFIG } from './app/providers/fs-phone-config';
 
 export { extractPhoneData } from './app/helpers/extract-phone-data';
 export { setPhoneData } from './app/helpers/set-phone-data';

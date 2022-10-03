@@ -42,12 +42,12 @@ export class PhoneService {
     return result;
   }
 
-  public parsePhoneNumber(value: string, country?: CountryCode): PhoneNumber {
+  public parsePhoneNumber(value: string, countryCode?: CountryCode): PhoneNumber {
     let phoneNumber: PhoneNumber;
 
     try {
-       phoneNumber = !!country
-         ? parsePhoneNumber(value, country, this.metadata)
+       phoneNumber = !!countryCode
+         ? parsePhoneNumber(value, countryCode, this.metadata)
          : parsePhoneNumber(value, this.metadata);
     } catch (e) {
       throw new Error('Can not parse passed phone number. ' + e)

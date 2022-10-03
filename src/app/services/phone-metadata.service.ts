@@ -8,8 +8,8 @@ import { delayedRetry } from '@firestitch/common';
 
 import { MetadataJson } from 'libphonenumber-js';
 
-import { FS_PHONE_CONFIG } from '../providers/phone-config';
 import { IFsPhoneConfig } from '../interfaces/phone-config.interface';
+import { PHONE_CONFIG } from '../providers';
 
 const DEFAULT_LOAD_PATH = '/assets/metadata.full.json';
 
@@ -23,7 +23,7 @@ export class PhoneMetadataService {
   private _ready$ = new BehaviorSubject<boolean>(false);
 
   constructor(
-    @Optional() @Inject(FS_PHONE_CONFIG) private readonly _phoneConfig: IFsPhoneConfig,
+    @Optional() @Inject(PHONE_CONFIG) private readonly _phoneConfig: IFsPhoneConfig,
   ) {
     this._loadMetadata();
   }
