@@ -280,7 +280,9 @@ export class FsPhoneFieldComponent
       }
 
       if(this.allowNumberExt && event.key.match(/\d/) && asYouType.isValid()) {
-        this.extNumberEl.focus();
+        setTimeout(() => {
+          this.extNumberEl.focus();
+        });
       }
     } catch (error) {
     }
@@ -289,7 +291,9 @@ export class FsPhoneFieldComponent
   public extKeyup(event: KeyboardEvent): void {
     if(event.code === 'Backspace') {
       if(this.extNumberEl.selectionStart === 0) {
-        this.phoneNumberEl.focus();
+        setTimeout(() => {
+          this.phoneNumberEl.focus();
+        })
       }
     }
   }
