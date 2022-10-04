@@ -279,7 +279,6 @@ export class FsPhoneFieldComponent
       'Enter',
       'Backspace',
       'End',
-      'Home'
     ];
 
     if(!event.key.match(/[\d]/) && codes.indexOf(event.code) === -1) {
@@ -299,7 +298,7 @@ export class FsPhoneFieldComponent
       const asYouType = new AsYouType(this.countryControl.value);
       const formatted = asYouType.input(value);
       
-      if(event.code === 'Backspace' && !formatted.match(/\d$/)) {
+      if(event.code === 'Backspace' && !asYouType.isValid()) {
         return;
       }
 
