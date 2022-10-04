@@ -7,7 +7,7 @@ import { Component } from '@angular/core';
 })
 export class PhoneInputWithStringModeComponent {
 
-  public input = '+12133734253 ext. 1234';
+  public input = '2133734253';
 
   public model = this.input;
 

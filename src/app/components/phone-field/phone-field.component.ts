@@ -91,7 +91,7 @@ export class FsPhoneFieldComponent
   }
 
   @Input()
-  public mode: 'string' | 'object' = 'object';
+  public mode: 'string' | 'object' = 'string';
 
   @Input()
   public country: CountryCode;
@@ -176,7 +176,7 @@ export class FsPhoneFieldComponent
 
     if (this.mode === 'string') {
       // const phoneNumber = value.number.replace(/[^0-9.]/g, '');
-      let phoneNumberString = `${value.countryCode}${value.number}`;
+      let phoneNumberString = `${value.countryCode} ${value.number}`;
 
       if (value.ext && this.countryControl.value) {
         phoneNumberString += ` ${this._phone.getExtPrefix(this.countryControl.value)} ${value.ext}`
@@ -259,7 +259,16 @@ export class FsPhoneFieldComponent
     }
   }
 
-  public phoneKeydown(event: KeyboardEvent): void {
+  public phoneKeydown(event: KeyboardEvent): void {    
+    if(
+      this.allowNumberExt &&
+      event.code === 'ArrowRight' && 
+      this.phoneNumberEl.selectionStart === this.phoneNumberEl.value.length
+    ) {
+      this.focusExtNumber();
+      return;
+    }
+  
     const codes = [
       'ArrowUp',
       'ArrowRight',
@@ -269,6 +278,8 @@ export class FsPhoneFieldComponent
       'Tab',
       'Enter',
       'Backspace',
+      'End',
+      'Home'
     ];
 
     if(!event.key.match(/[\d]/) && codes.indexOf(event.code) === -1) {
@@ -277,7 +288,7 @@ export class FsPhoneFieldComponent
   }
   
   public phoneKeyup(event: KeyboardEvent): void {
-    if(!event.key.match(/\d/)) {
+    if(!event.key.match(/\d/) && event.code !== 'Backspace') {
       return;
     }
 
@@ -288,28 +299,56 @@ export class FsPhoneFieldComponent
       const asYouType = new AsYouType(this.countryControl.value);
       const formatted = asYouType.input(value);
       
+      if(event.code === 'Backspace' && !formatted.match(/\d$/)) {
+        return;
+      }
+
       input.value = formatted;
 
       if(selection !==null) {
         input.setSelectionRange(selection, selection);
       }
 
-      if(this.allowNumberExt && event.key.match(/\d/) && asYouType.isPossible()) {
-        setTimeout(() => {
-          this.extNumberEl.focus();
-        });
+      if(this.allowNumberExt && event.key.match(/\d/) && asYouType.isValid()) {
+        this.selectExtNumber();
       }
     } catch (error) {
     }
   }
 
+  public focusExtNumber(): void {
+    setTimeout(() => {
+      this.extNumberEl.focus();
+    });
+  }
+
+  public selectExtNumber(): void {
+    setTimeout(() => {
+      this.extNumberEl.select();
+    });
+  }
+
+  public focusPhoneNumber(): void {
+    setTimeout(() => {
+      this.phoneNumberEl.focus();
+    });
+  }
+
   public extKeyup(event: KeyboardEvent): void {
     if(event.code === 'Backspace') {
       if(this.extNumberEl.selectionStart === 0) {
-        setTimeout(() => {
-          this.phoneNumberEl.focus();
-        })
+        this.focusPhoneNumber();
       }
+    }
+  }
+
+  public extKeydown(event: KeyboardEvent): void {    
+    if(
+      event.code === 'ArrowLeft' && 
+      this.extNumberEl.selectionStart === 0
+    ) {
+      this.focusPhoneNumber();
+      return;
     }
   }
 
