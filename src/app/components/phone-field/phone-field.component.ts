@@ -260,8 +260,10 @@ export class FsPhoneFieldComponent
   }
 
   public phoneFormat(): void {   
-    const asYouType = new AsYouType(this.countryControl.value);
-    this.phoneNumberEl.value = asYouType.input(this.phoneNumberEl.value);
+    const phoneNumber = parsePhoneNumberFromString(this.phoneNumberEl.value, this.countryControl.value);
+    phoneNumber.ext = this.extValue;
+    this.phoneNumberEl.value = phoneNumber.formatNational();
+    this._setPhoneNumber(phoneNumber);
   }
 
   public phoneKeydown(event: KeyboardEvent): void {    
@@ -302,23 +304,19 @@ export class FsPhoneFieldComponent
     try {
       let input = this.phoneNumberEl;
       const value = input.value;
-      const selection = input.value.length === input.selectionStart ? null : input.selectionStart;
       const asYouType = new AsYouType(this.countryControl.value);
       let formatted = asYouType.input(value);
 
-      if(asYouType.isValid()) {
-        const parsePhone = parsePhoneNumberFromString(value, this.countryControl.value);
-        formatted = parsePhone.formatNational();
-      }
+      if(input.value.length === input.selectionStart) {
+        if(event.code === 'Backspace' && !asYouType.isValid()) {
+          return;
+        }
 
-      if(event.code === 'Backspace' && !asYouType.isValid()) {
-        return;
-      }
+        input.value = formatted;
 
-      input.value = formatted;
-
-      if(selection !==null) {
-        input.setSelectionRange(selection, selection);
+        if(asYouType.isValid()) {
+          this.phoneFormat();
+        }
       }
       
       if(this.allowNumberExt && event.key.match(/\d/) && asYouType.isValid()) {
