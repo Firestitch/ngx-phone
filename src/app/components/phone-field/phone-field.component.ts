@@ -286,7 +286,7 @@ export class FsPhoneFieldComponent
       'End',
     ];
 
-    if(!event.key.match(/[\d]/) && codes.indexOf(event.code) === -1 && !event.ctrlKey && !event.shiftKey) {
+    if(!event.key.match(/[\d]/) && codes.indexOf(event.code) === -1 && !event.ctrlKey && !event.shiftKey && !event.metaKey) {
       event.preventDefault();
     }
   }
