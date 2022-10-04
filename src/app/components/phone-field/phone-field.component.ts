@@ -259,6 +259,11 @@ export class FsPhoneFieldComponent
     }
   }
 
+  public phonePaste(event: KeyboardEvent): void {   
+    const asYouType = new AsYouType(this.countryControl.value);
+    this.phoneNumberEl.value = asYouType.input(this.phoneNumberEl.value);
+  }
+
   public phoneKeydown(event: KeyboardEvent): void {    
     if(
       this.allowNumberExt &&
@@ -281,7 +286,7 @@ export class FsPhoneFieldComponent
       'End',
     ];
 
-    if(!event.key.match(/[\d]/) && codes.indexOf(event.code) === -1) {
+    if(!event.key.match(/[\d]/) && codes.indexOf(event.code) === -1 && !event.ctrlKey && !event.shiftKey) {
       event.preventDefault();
     }
   }
@@ -307,7 +312,7 @@ export class FsPhoneFieldComponent
       if(selection !==null) {
         input.setSelectionRange(selection, selection);
       }
-
+      
       if(this.allowNumberExt && event.key.match(/\d/) && asYouType.isValid()) {
         this.selectExtNumber();
       }

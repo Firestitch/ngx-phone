@@ -42,6 +42,7 @@
         formControlName="number"
         (keyup)="phoneKeyup($event)"
         (keydown)="phoneKeydown($event)"
+        (paste)="phonePaste($event)"
         #phoneNumberInput>
 
       <ng-container *ngIf="allowNumberExt && extPrefix">
