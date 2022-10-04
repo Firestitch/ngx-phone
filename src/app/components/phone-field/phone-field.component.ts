@@ -42,7 +42,7 @@ import {
 
 import { FsCountry, IFsCountry } from '@firestitch/country';
 
-import { CountryCode, PhoneNumber, validatePhoneNumberLength, AsYouType } from 'libphonenumber-js';
+import { CountryCode, PhoneNumber, parsePhoneNumberFromString, AsYouType } from 'libphonenumber-js';
 
 import { IFsPhoneValue } from '../../interfaces/phone-value.interface';
 import { PhoneService } from '../../services/phone.service';
@@ -259,7 +259,7 @@ export class FsPhoneFieldComponent
     }
   }
 
-  public phonePaste(event: KeyboardEvent): void {   
+  public phoneFormat(): void {   
     const asYouType = new AsYouType(this.countryControl.value);
     this.phoneNumberEl.value = asYouType.input(this.phoneNumberEl.value);
   }
@@ -273,26 +273,28 @@ export class FsPhoneFieldComponent
       this.focusExtNumber();
       return;
     }
-  
-    const codes = [
-      'ArrowUp',
-      'ArrowRight',
-      'ArrowDown',
-      'ArrowLeft',
-      'Delete',
-      'Tab',
-      'Enter',
-      'Backspace',
-      'End',
-    ];
+  }
 
-    if(!event.key.match(/[\d]/) && codes.indexOf(event.code) === -1 && !event.ctrlKey && !event.shiftKey && !event.metaKey) {
+  public phoneKeypress(event: KeyboardEvent): void { 
+    const regEx = new RegExp(/[^\d\)\(\s\-)]/,'g');
+    if(event.key && event.key.match(regEx)) {
       event.preventDefault();
     }
   }
   
   public phoneKeyup(event: KeyboardEvent): void {
-    if(!event.key.match(/\d/) && event.code !== 'Backspace') {
+    if(!event.key.match(/[\d]/) && 
+      (
+        event.code === 'Backspace' ||
+        event.code === 'Delete' ||
+        event.key === 'Control' ||
+        event.key === 'Tab' ||
+        event.key === 'Shift' ||
+        event.ctrlKey ||
+        event.metaKey ||
+        event.shiftKey
+      )
+    ) {    
       return;
     }
 
@@ -301,8 +303,13 @@ export class FsPhoneFieldComponent
       const value = input.value;
       const selection = input.value.length === input.selectionStart ? null : input.selectionStart;
       const asYouType = new AsYouType(this.countryControl.value);
-      const formatted = asYouType.input(value);
-      
+      let formatted = asYouType.input(value);
+
+      if(asYouType.isValid()) {
+        const parsePhone = parsePhoneNumberFromString(value, this.countryControl.value);
+        formatted = parsePhone.formatNational();
+      }
+
       if(event.code === 'Backspace' && !asYouType.isValid()) {
         return;
       }
