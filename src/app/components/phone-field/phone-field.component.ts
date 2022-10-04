@@ -287,9 +287,10 @@ export class FsPhoneFieldComponent
       (
         event.code === 'Backspace' ||
         event.code === 'Delete' ||
-        event.key === 'Control' ||
         event.key === 'Tab' ||
+        event.key === 'Control' ||
         event.key === 'Shift' ||
+        event.key === 'Meta' ||
         event.ctrlKey ||
         event.metaKey ||
         event.shiftKey
