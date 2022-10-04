@@ -236,6 +236,9 @@ export class FsPhoneFieldComponent
   public get extValue(): string {
     return this.phoneNumberParts.get('ext').value;
   }
+  public get countryIsoCodeValue(): string {
+    return this.countryControl.value;
+  }
 
   public ngOnInit(): void {
     this._initDefaultCountry();
@@ -319,7 +322,12 @@ export class FsPhoneFieldComponent
         }
       }
       
-      if(this.allowNumberExt && event.key.match(/\d/) && asYouType.isValid()) {
+      if(
+        this.allowNumberExt && 
+        event.key.match(/\d/) && 
+        ['US','CA'].indexOf(this.countryIsoCodeValue) !== -1 && 
+        asYouType.isValid()
+      ) {
         this.selectExtNumber();
       }
     } catch (error) {
