@@ -49,7 +49,6 @@ import { PhoneService } from '../../services/phone.service';
 import { PhoneMetadataService } from '../../services/phone-metadata.service';
 import { IFsPhoneConfig } from '../../interfaces/phone-config.interface';
 import { PHONE_CONFIG } from '../../providers';
-import { MatInput } from '@angular/material/input';
 
 
 @Component({
@@ -262,11 +261,19 @@ export class FsPhoneFieldComponent
     }
   }
 
-  public phoneFormat(): void {   
+  public phonePaste(): void {
+    setTimeout(() => {
+      this.phoneFormat();
+    });
+  }
+
+  public phoneFormat(): void {
     const phoneNumber = parsePhoneNumberFromString(this.phoneNumberEl.value, this.countryControl.value);
-    phoneNumber.ext = this.extValue;
-    this.phoneNumberEl.value = phoneNumber.formatNational();
-    this._setPhoneNumber(phoneNumber);
+    if(phoneNumber) {
+      phoneNumber.ext = this.extValue;
+      this.phoneNumberEl.value = phoneNumber.formatInternational();
+      this._setPhoneNumber(phoneNumber);
+    }
   }
 
   public phoneKeydown(event: KeyboardEvent): void {    
