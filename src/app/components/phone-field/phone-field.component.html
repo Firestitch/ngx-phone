@@ -12,8 +12,8 @@
         panelClass="fs-phone-country-pane"
         #countryInput>
       <mat-select-trigger>
-        <fs-country-phone-code 
-          [code]="countryControl.value" 
+        <fs-country-phone-code
+          [code]="countryControl.value"
           [showCode]="false">
         </fs-country-phone-code>
       </mat-select-trigger>
@@ -48,15 +48,15 @@
         #phoneNumberInput>
 
       <ng-container *ngIf="allowNumberExt && extPrefix">
-        <span>{{ extPrefix }}</span>
-        <input 
+        <span class="ext-text">{{ extPrefix }}</span>
+        <input
           #extNumberInput
           (keyup)="extKeyup($event)"
           (keydown)="extKeydown($event)"
-          class="ext-number" 
-          matInput 
-          placeholder="xxx" 
-          formControlName="ext" 
+          class="ext-number"
+          matInput
+          placeholder="xxx"
+          formControlName="ext"
           [name]="name + '-ext'">
       </ng-container>
     </ng-container>
