@@ -609,9 +609,15 @@ export class FsPhoneFieldComponent
   }
 
   private _setPhoneNumber(phoneNumber: PhoneNumber, emitEvent = true): void {
+    const parsedNumber = this._phone.formatIncompletePhoneNumber(
+      '+' + phoneNumber.countryCallingCode,
+      phoneNumber.nationalNumber as string,
+      phoneNumber.country,
+    );
+
     this.phoneNumberParts.patchValue({
       countryCode: phoneNumber.countryCallingCode || '',
-      number: this._phone.formatIncompletePhoneNumber('+' + phoneNumber.countryCallingCode, phoneNumber.nationalNumber as string, phoneNumber.country),
+      number: parsedNumber,
       ext: phoneNumber.ext || '',
     }, { emitEvent: emitEvent });
 

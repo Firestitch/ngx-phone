@@ -3,12 +3,11 @@ import { Injectable } from '@angular/core';
 import {
   CountryCode,
   formatIncompletePhoneNumber,
-  parsePhoneNumber,
   getExtPrefix,
   PhoneNumber,
   MetadataJson,
 } from 'libphonenumber-js/core';
-import { AsYouType } from 'libphonenumber-js';
+import { AsYouType, parsePhoneNumber } from 'libphonenumber-js';
 
 import { IFsPhoneValue } from '../interfaces/phone-value.interface';
 import { PhoneMetadataService } from './phone-metadata.service';
@@ -47,10 +46,14 @@ export class PhoneService {
 
     try {
        phoneNumber = !!countryCode
-         ? parsePhoneNumber(value, countryCode, this.metadata)
-         : parsePhoneNumber(value, this.metadata);
+         ? parsePhoneNumber(value, countryCode)
+         : parsePhoneNumber(value);
     } catch (e) {
       throw new Error('Can not parse passed phone number. ' + e)
+    }
+
+    if (!phoneNumber.country) {
+      phoneNumber.country = countryCode;
     }
 
     return phoneNumber;
@@ -75,7 +78,7 @@ export class PhoneService {
         phone = `+${phone}`;
       }
 
-      phoneNumber = parsePhoneNumber(phone, this.metadata);
+      phoneNumber = parsePhoneNumber(phone);
 
       return phoneNumber.isValid() || phoneNumber.isPossible();
     } catch (e) {
@@ -84,7 +87,7 @@ export class PhoneService {
   }
 
   public formatPhoneNumber(value: IFsPhoneValue): string {
-    const phoneNumber = parsePhoneNumber(`${value.countryCode}${value.number}`, this.metadata);
+    const phoneNumber = parsePhoneNumber(`${value.countryCode}${value.number}`);
 
     return phoneNumber
       .formatInternational()
