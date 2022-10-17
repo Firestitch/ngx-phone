@@ -254,10 +254,10 @@ export class FsPhoneFieldComponent
   }
 
   public formatInput(): void {
-    if(this.phoneNumberEl) {
+    if (this.phoneNumberEl) {
       const asYouType = new AsYouType(this.countryControl.value);
-      const formatted = asYouType.input(this.phoneNumberEl.value);
-      this.phoneNumberEl.value = formatted;
+
+      this.phoneNumberEl.value = asYouType.input(this.phoneNumberEl.value);
     }
   }
 
@@ -269,17 +269,17 @@ export class FsPhoneFieldComponent
 
   public phoneFormat(): void {
     const phoneNumber = parsePhoneNumberFromString(this.phoneNumberEl.value, this.countryControl.value);
-    if(phoneNumber) {
+    if (phoneNumber) {
       phoneNumber.ext = this.extValue;
       this.phoneNumberEl.value = phoneNumber.formatInternational();
       this._setPhoneNumber(phoneNumber);
     }
   }
 
-  public phoneKeydown(event: KeyboardEvent): void {    
-    if(
+  public phoneKeydown(event: KeyboardEvent): void {
+    if (
       this.allowNumberExt &&
-      event.code === 'ArrowRight' && 
+      event.code === 'ArrowRight' &&
       this.phoneNumberEl.selectionStart === this.phoneNumberEl.value.length
     ) {
       this.focusExtNumber();
@@ -287,15 +287,15 @@ export class FsPhoneFieldComponent
     }
   }
 
-  public phoneKeypress(event: KeyboardEvent): void { 
-    const regEx = new RegExp(/[^\d\)\(\s\-)]/,'g');
-    if(event.key && event.key.match(regEx)) {
+  public phoneKeypress(event: KeyboardEvent): void {
+    const regEx = new RegExp(/[^\d\)\(\s\-)]/, 'g');
+    if (event.key && event.key.match(regEx)) {
       event.preventDefault();
     }
   }
-  
+
   public phoneKeyup(event: KeyboardEvent): void {
-    if(!event.key.match(/[\d]/) && 
+    if (!event.key.match(/[\d]/) &&
       (
         event.code === 'Backspace' ||
         event.code === 'Delete' ||
@@ -307,32 +307,31 @@ export class FsPhoneFieldComponent
         event.metaKey ||
         event.shiftKey
       )
-    ) {    
+    ) {
       return;
     }
 
     try {
-      let input = this.phoneNumberEl;
+      const input = this.phoneNumberEl;
       const value = input.value;
       const asYouType = new AsYouType(this.countryControl.value);
-      let formatted = asYouType.input(value);
+      const formatted = asYouType.input(value);
 
-      if(input.value.length === input.selectionStart) {
-        if(event.code === 'Backspace' && !asYouType.isValid()) {
+      if (input.value.length === input.selectionStart) {
+        if (event.code === 'Backspace' && !asYouType.isValid()) {
           return;
         }
 
         input.value = formatted;
 
-        if(asYouType.isValid()) {
+        if (asYouType.isValid()) {
           this.phoneFormat();
         }
       }
-      
-      if(
-        this.allowNumberExt && 
-        event.key.match(/\d/) && 
-        ['US','CA'].indexOf(this.countryIsoCodeValue) !== -1 && 
+
+      if (this.allowNumberExt &&
+        event.key.match(/\d/) &&
+        ['US', 'CA'].indexOf(this.countryIsoCodeValue) !== -1 &&
         asYouType.isValid()
       ) {
         this.selectExtNumber();
@@ -360,16 +359,16 @@ export class FsPhoneFieldComponent
   }
 
   public extKeyup(event: KeyboardEvent): void {
-    if(event.code === 'Backspace') {
-      if(this.extNumberEl.selectionStart === 0) {
+    if (event.code === 'Backspace') {
+      if (this.extNumberEl.selectionStart === 0) {
         this.focusPhoneNumber();
       }
     }
   }
 
-  public extKeydown(event: KeyboardEvent): void {    
-    if(
-      event.code === 'ArrowLeft' && 
+  public extKeydown(event: KeyboardEvent): void {
+    if (
+      event.code === 'ArrowLeft' &&
       this.extNumberEl.selectionStart === 0
     ) {
       this.focusPhoneNumber();
@@ -506,7 +505,7 @@ export class FsPhoneFieldComponent
       .pipe(
         takeUntil(this._destroy$),
       )
-      .subscribe((value: any) => {
+      .subscribe(() => {
         if (this.empty) {
           this._onChange(null);
         } else {
@@ -524,7 +523,7 @@ export class FsPhoneFieldComponent
         takeUntil(this._destroy$),
       )
       .subscribe((countryCode: CountryCode) => {
-        this._setCountryCode(countryCode);       
+        this._setCountryCode(countryCode);
       });
   }
 
@@ -544,7 +543,7 @@ export class FsPhoneFieldComponent
     }
   }
 
-  private _updateExt(code: CountryCode) {6
+  private _updateExt(code: CountryCode) {
     this.extPrefix = this._phone.getExtPrefix(code);
   }
 
@@ -577,7 +576,7 @@ export class FsPhoneFieldComponent
 
       try {
         phoneNumber = this._phone.parsePhoneNumber(value, this.country);
-      } catch(e) {}
+      } catch (e) {}
     } else if (value && typeof value === 'object') {
       if (value.isoCode) {
         this.country = value.isoCode as any;
