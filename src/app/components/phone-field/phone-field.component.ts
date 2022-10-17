@@ -621,7 +621,7 @@ export class FsPhoneFieldComponent
       ext: phoneNumber.ext || '',
     }, { emitEvent: emitEvent });
 
-    this._setCountryCode(phoneNumber.country);
+    this._setCountryCode(phoneNumber.country, emitEvent);
   }
 
   private _setCountryCode(isoCode: CountryCode, emitEvent = true): void {
