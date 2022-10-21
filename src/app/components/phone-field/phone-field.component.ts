@@ -84,7 +84,13 @@ export class FsPhoneFieldComponent
   @Input()
   public set disabled(value: boolean) {
     this._disabled = coerceBooleanProperty(value);
-    this._disabled ? this.phoneNumberParts.disable() : this.phoneNumberParts.enable();
+    if (this._disabled) {
+      this.phoneNumberParts.disable();
+      this.countryControl.disable();
+    } else {
+      this.phoneNumberParts.enable();
+      this.countryControl.enable();
+    }
 
     this.stateChanges.next();
   }

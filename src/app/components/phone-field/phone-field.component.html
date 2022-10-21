@@ -33,7 +33,7 @@
     </mat-select>
 
     <ng-container [formGroup]="phoneNumberParts">
-      <span class="code">{{codeValue}}</span>
+      <span class="code" [class.disabled]="disabled">{{codeValue}}</span>
       <input
         class="phone-number"
         matInput

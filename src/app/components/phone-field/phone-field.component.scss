@@ -36,6 +36,10 @@
   margin-right: 5px;
 }
 
+.disabled {
+  opacity: 0.38; // TODO replace with theme variable
+}
+
 .phone-group {
   &.with-emoji {
     align-items: baseline;
