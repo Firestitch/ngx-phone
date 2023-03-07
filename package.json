@@ -49,6 +49,7 @@
     "@firestitch/autocomplete-chips": "^12.0.0",
     "@firestitch/clear": "^12.0.0",
     "@firestitch/common": "^12.0.0",
+    "@firestitch/component-tools": "^12.0.8",
     "@firestitch/country": "^12.0.0",
     "@firestitch/date": "^12.0.0",
     "@firestitch/datepicker": "^12.0.1",
@@ -81,8 +82,7 @@
     "rxjs": "^6.5.3",
     "tslint": "~6.1.0",
     "typescript": "4.3.5",
-    "zone.js": "~0.11.4",
-    "@firestitch/component-tools": "^12.0.6"
+    "zone.js": "~0.11.4"
   },
   "engines": {
     "node": ">=6.0.0"
@@ -93,7 +93,7 @@
     "@firestitch/skeleton": ">=12.0.0"
   },
   "dependencies": {
-    "tslib": "^2.3.1",
-    "libphonenumber-js": "^1.10.7"
+    "libphonenumber-js": "^1.10.7",
+    "tslib": "^2.3.1"
   }
 }
