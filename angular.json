@@ -43,7 +43,8 @@
             ],
             "scripts": [],
             "allowedCommonJsDependencies": [
-              "highlight.js"
+              "highlight.js",
+              "date-fns-tz"
             ]
           },
           "configurations": {

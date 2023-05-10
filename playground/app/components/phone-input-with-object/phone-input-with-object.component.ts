@@ -10,14 +10,8 @@ import { delay } from 'rxjs/operators';
   styleUrls: [ 'phone-input-with-object.component.css' ]
 })
 export class PhoneInputWithObjectComponent {
-  public input = {
-    countryCode: '1',
-    number: '(416) 373-4253'
-  };
 
-  public model = { ...this.input };
-
-  constructor() {}
+  public model = '+1 (416) 373-4253';
 
   public save = () => {
     return of(true)

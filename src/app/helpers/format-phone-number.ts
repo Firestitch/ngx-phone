@@ -1,21 +1,21 @@
-export function formatPhoneNumber(str: string) {
-  const cleaned = str.replace(/\D/g, '');
+import { parsePhoneNumber } from 'libphonenumber-js';
 
-  if (!cleaned.length) {
-    return '';
-  }
+export function formatPhoneNumber(str: string, options?: { format: 'international' | 'national' }): string {
+  try {
+    const phoneNumber = parsePhoneNumber(str);
 
-  const match = cleaned.match(/^(\d{0,3})(\d{0,3})(\d{0,4})(\d*)/);
+    let formatted = '';
 
-  let formatted = '';
-
-  if (match) {
-    formatted = '(' + match[1] + ') ' + match[2] + '-' + match[3];
-
-    if (match[4]) {
-      formatted += ' ext. ' + match[4];
+    if((options?.format || 'national') === 'national') {
+      formatted = phoneNumber.formatNational();
+    } else if(options?.format === 'international') {
+      formatted = phoneNumber.formatNational();
     }
-  }
 
-  return formatted;
+    return formatted.trim();
+
+  } catch (e) {
+    return str;
+  }
 }
+

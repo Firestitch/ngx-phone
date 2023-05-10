@@ -1,8 +1,5 @@
 import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
-import { FsCountry } from '@firestitch/country';
 
-import { PhoneService } from '../../services/phone.service';
-import {PhoneMetadataService } from '../../services/phone-metadata.service';
 import { formatPhoneNumber } from '../../helpers/format-phone-number';
 import { IFsPhoneValue } from '../../interfaces/phone-value.interface';
 
@@ -17,12 +14,6 @@ export class FsPhoneComponent implements OnChanges {
   public phone: number | string | IFsPhoneValue;
 
   private _formattedPhone: string;
-
-  constructor(
-    private _phone: PhoneService,
-    private _countriesStore: FsCountry,
-    private _metadata: PhoneMetadataService,
-  ) {}
 
   public get formattedPhone(): string {
     return this._formattedPhone;

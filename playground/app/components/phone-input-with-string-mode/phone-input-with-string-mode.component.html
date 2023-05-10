@@ -1,6 +1,6 @@
 <mat-form-field>
   <mat-label>Phone number</mat-label>
-  <fs-phone-field [(ngModel)]="model" mode="string" [required]="true"></fs-phone-field>
+  <fs-phone-field [(ngModel)]="model" [required]="true"></fs-phone-field>
   <mat-hint>enter your phone number</mat-hint>
 </mat-form-field>
 
@@ -11,5 +11,10 @@
 
 <fieldset class="input-fieldset">
   <legend>Output Value</legend>
-  {{ model|json }}
+  {{ model | json }}
+</fieldset>
+
+<fieldset class="input-fieldset">
+  <legend>Formatted Value</legend>
+  {{ model | fsPhone }}
 </fieldset>

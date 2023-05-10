@@ -6,7 +6,7 @@ import { Component } from '@angular/core';
   styleUrls: [ 'phone-input-with-string.component.css' ]
 })
 export class PhoneInputWithStringComponent {
-  public input = '+14163734253 ext. 1234';
+  public input = '+1(416) 373-4253 ext. 1234';
 
   public model = this.input;
 
