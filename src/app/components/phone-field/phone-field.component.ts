@@ -104,6 +104,9 @@ export class FsPhoneFieldComponent
   @Input()
   public name: string;
 
+  @Input()
+  public autocomplete = 'on';
+
   @HostBinding()
   public id = `example-tel-input-${FsPhoneFieldComponent.nextId++}`;
 
