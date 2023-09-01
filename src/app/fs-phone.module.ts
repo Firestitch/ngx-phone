@@ -18,6 +18,7 @@ import { FsPhonePipe } from './pipes/phone-format.pipe';
 import { IFsPhoneConfig } from './interfaces/phone-config.interface';
 import { FS_PHONE_CONFIG } from './providers/fs-phone-config';
 import { PHONE_CONFIG, PHONE_CONFIG_ROOT } from './providers';
+import { FsPhoneField1Component } from './components/phone-field1/phone-field1.component';
 
 
 
@@ -33,12 +34,14 @@ import { PHONE_CONFIG, PHONE_CONFIG_ROOT } from './providers';
   exports: [
     FsPhoneComponent,
     FsPhoneFieldComponent,
+    FsPhoneField1Component,
     FsPhoneDirective,
     FsPhonePipe,
   ],
   declarations: [
     FsPhoneComponent,
     FsPhoneFieldComponent,
+    FsPhoneField1Component,
     FsPhoneDirective,
     FsPhonePipe,
   ],

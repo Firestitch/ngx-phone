@@ -1,0 +1,78 @@
+:host {
+  display: block;
+  width: auto;
+
+  ::ng-deep {
+    input.mat-input-element {
+      margin-top: 0;
+    }
+  }
+}
+
+::ng-deep .fs-phone-country-pane {
+  mat-select-trigger {
+    position: relative;
+
+    fs-country-phone-code {
+      position: relative;
+      top: 1px;
+    }
+  }
+
+  .mat-option-text {
+    display: inline-flex;
+
+    .fs-phone-country-code {
+      order: -1;
+    }
+
+    .fs-phone-country-flag {
+      order: -2;
+    }
+  }
+}
+
+.code {
+  margin-right: 5px;
+}
+
+.disabled {
+  opacity: 0.38; // TODO replace with theme variable
+}
+
+.phone-group {
+  &.with-emoji {
+    align-items: baseline;
+  }
+
+  display: flex;
+  align-items: center;
+
+  .phone-code {
+    min-width: 38px;
+    width: auto;
+  }
+
+  .phone-number {
+    width: 110px;
+    min-width: 110px;
+    margin-left: 4px;
+  }
+
+  .ext-text {
+    margin-left: 10px;
+  }
+
+  .ext-number {
+    margin-left: 5px;
+    width: 50px;
+  }
+}
+
+:host(:not(.floating)) {
+  ::ng-deep {
+    .mat-select-arrow-wrapper .mat-select-arrow {
+      opacity: 0 !important;
+    }
+  }
+}

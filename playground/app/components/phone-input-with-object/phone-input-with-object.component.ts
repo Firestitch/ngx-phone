@@ -13,6 +13,10 @@ export class PhoneInputWithObjectComponent {
 
   public model = '+1 (416) 373-4253';
 
+  public blur() {
+  
+  }
+
   public save = () => {
     return of(true)
       .pipe(

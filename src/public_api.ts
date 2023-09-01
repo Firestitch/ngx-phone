@@ -6,6 +6,7 @@
 export { FsPhoneModule } from './app/fs-phone.module';
 
 export { FsPhoneFieldComponent } from './app/components/phone-field/phone-field.component';
+export { FsPhoneField1Component } from './app/components/phone-field1/phone-field1.component';
 export { FsPhoneComponent } from './app/components/phone/phone.component';
 
 export { FsPhoneDirective } from './app/directives/phone.directive';
