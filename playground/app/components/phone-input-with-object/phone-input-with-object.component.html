@@ -1,20 +1,11 @@
 <form fsForm [submit]="save">
   <mat-form-field>
     <mat-label>Phone number</mat-label>
-    <!-- <fs-phone-field
-      [(ngModel)]="model"
-      name="phone"
-      [required]="true">
-    </fs-phone-field> -->
 
-   <input
-      fs-phone-field1
-      matInput
-      [autocomplete]="'ssasd'"
-      [(ngModel)]="model"
-      (blur)="blur()"
-      name="phone"
-      [required]="true">
+    <input matInput
+           fs-phone-field1
+           [(ngModel)]="model"
+           name="test">
 
     <mat-hint>enter your phone number</mat-hint>
   </mat-form-field>
@@ -23,8 +14,6 @@
     <button mat-raised-button color="primary">Submit</button>
   </div>
 </form>
-
-ssssssssssssss
 
 <fieldset class="input-fieldset">
   <legend>Model Value</legend>

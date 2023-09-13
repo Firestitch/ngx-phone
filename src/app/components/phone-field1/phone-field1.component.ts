@@ -1,7 +1,7 @@
 import {
   AfterContentInit,
   ChangeDetectionStrategy,
-  Component,
+  Component, ContentChild,
   ElementRef,
   HostBinding,
   Inject,
@@ -9,8 +9,9 @@ import {
   OnDestroy,
   OnInit,
   Optional,
-  Self,
-  ViewChild
+  Self, SkipSelf,
+  ViewChild,
+  ViewContainerRef
 } from '@angular/core';
 
 import {
@@ -50,6 +51,8 @@ import { PhoneService } from '../../services/phone.service';
 import { PhoneMetadataService } from '../../services/phone-metadata.service';
 import { IFsPhoneConfig } from '../../interfaces/phone-config.interface';
 import { PHONE_CONFIG } from '../../providers';
+import { DomPortal, Portal } from '@angular/cdk/portal';
+import { FsPhoneFieldComponent } from '../phone-field/phone-field.component';
 
 
 @Component({
@@ -121,6 +124,8 @@ export class FsPhoneField1Component
   public countryControl = new FormControl('');
   public ready$: Observable<boolean>;
 
+  selectedPortal: Portal<any>;
+
   @ViewChild('extNumberInput')
   private _extNumberInputRef: ElementRef;
 
@@ -153,22 +158,26 @@ export class FsPhoneField1Component
     @Optional()
     @Inject(PHONE_CONFIG)
     private readonly _phoneConfig: IFsPhoneConfig,
+    @SkipSelf()
+    private vc: ViewContainerRef,
   ) {
     this._initControls();
-    this._registerValueAccessor();
-    this._listenContainerClick();
-    this._initResourcesReadyState();
+    // this._registerValueAccessor();
+    // this._listenContainerClick();
+    // this._initResourcesReadyState();
   }
 
   ngAfterContentInit(): void {
-    const el = this._el;
-   const x = document.getElementById('here');
+    debugger;
+    const portal = new DomPortal(this._el.nativeElement);
 
-   el.nativeElement.childNodes.forEach((c) => {
-    el.nativeElement.offsetParent.append(c);
-   });
-   
-   x.append(el.nativeElement);
+    const el = this._el;
+
+    el.nativeElement.childNodes.forEach((c) => {
+      el.nativeElement.offsetParent.append(c);
+    });
+
+    this.selectedPortal = portal;
   }
 
   public get countries$(): Observable<IFsCountry[]> {
@@ -261,12 +270,12 @@ export class FsPhoneField1Component
   }
 
   public ngOnInit(): void {
-    this._initDefaultCountry();
-    this._applyInternalValidation();
-    this._listenWriteValue();
-    this._listenPhonePartsChanges();
-    this._listenCountryChanges();
-    this._applyMaterialHacks();
+    // this._initDefaultCountry();
+    // this._applyInternalValidation();
+    // this._listenWriteValue();
+    // this._listenPhonePartsChanges();
+    // this._listenCountryChanges();
+    // this._applyMaterialHacks();
   }
 
   public ngOnDestroy(): void {

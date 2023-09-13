@@ -1,16 +1,16 @@
-
+<div #test>
   <div class="phone-group" role="group"
        [class.with-emoji]="emojiSupported"
        (focusin)="onFocusIn($event)"
        (focusout)="onFocusOut($event)">
     <mat-select
-        class="phone-code"
-        (opened)="countrySelectOpened()"
-        (selectionChange)="countrySelectionChange()"
-        [formControl]="countryControl"
-        tabindex="-1"
-        panelClass="fs-phone-country-pane"
-        #countryInput>
+      class="phone-code"
+      (opened)="countrySelectOpened()"
+      (selectionChange)="countrySelectionChange()"
+      [formControl]="countryControl"
+      tabindex="-1"
+      panelClass="fs-phone-country-pane"
+      #countryInput>
       <mat-select-trigger>
         <fs-country-phone-code
           [code]="countryControl.value"
@@ -20,8 +20,8 @@
 
       <ng-container *ngFor="let country of countries$ | async">
         <mat-option
-            *ngIf="!!country.countryCode"
-            [value]="country.isoCode">
+          *ngIf="!!country.countryCode"
+          [value]="country.isoCode">
           {{ country.name }}
           <span class="fs-phone-country-code">&nbsp;+{{ country.countryCode }}&nbsp;</span>
           <fs-country-flag
@@ -34,7 +34,21 @@
 
     <ng-container [formGroup]="phoneNumberParts">
       <span class="code" [class.disabled]="disabled">{{codeValue}}</span>
-     <span id="here"></span>
+
+      <ng-template [cdkPortalOutlet]="selectedPortal"></ng-template>
+      <!--<input
+        class="phone-number"
+        matInput
+        [name]="name"
+        placeholder="Phone"
+        [autocomplete]="autocomplete"
+        formControlName="number"
+        (keyup)="phoneKeyup($event)"
+        (keydown)="phoneKeydown($event)"
+        (keypress)="phoneKeypress($event)"
+        (paste)="phonePaste()"
+        (blur)="phoneFormat()"
+        #phoneNumberInput>-->
 
       <ng-container *ngIf="allowNumberExt && extPrefix">
         <span class="ext-text">{{ extPrefix }}</span>
@@ -50,3 +64,4 @@
       </ng-container>
     </ng-container>
   </div>
+</div>
