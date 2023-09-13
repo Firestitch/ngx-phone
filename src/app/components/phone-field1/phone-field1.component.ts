@@ -9,9 +9,8 @@ import {
   OnDestroy,
   OnInit,
   Optional,
-  Self, SkipSelf,
+  Self, 
   ViewChild,
-  ViewContainerRef
 } from '@angular/core';
 
 import {
@@ -23,13 +22,13 @@ import {
   Validator,
 } from '@angular/forms';
 
-import { MatFormFieldControl } from '@angular/material/form-field';
+import { MatFormField, MatFormFieldControl } from '@angular/material/form-field';
 
 import { coerceBooleanProperty } from '@angular/cdk/coercion';
 import { FocusMonitor } from '@angular/cdk/a11y';
 
 
-import { combineLatest, merge, Observable, ReplaySubject, Subject, timer } from 'rxjs';
+import { combineLatest, fromEvent, merge, Observable, ReplaySubject, Subject, timer } from 'rxjs';
 import {
   distinctUntilChanged,
   filter,
@@ -52,13 +51,13 @@ import { PhoneMetadataService } from '../../services/phone-metadata.service';
 import { IFsPhoneConfig } from '../../interfaces/phone-config.interface';
 import { PHONE_CONFIG } from '../../providers';
 import { DomPortal, Portal } from '@angular/cdk/portal';
-import { FsPhoneFieldComponent } from '../phone-field/phone-field.component';
+import { MatInput } from '@angular/material/input';
 
 
 @Component({
   selector: '[fs-phone-field1]',
   templateUrl: './phone-field1.component.html',
-  styleUrls: [ './phone-field1.component.scss' ],
+  styleUrls: ['./phone-field1.component.scss'],
   providers: [
     { provide: MatFormFieldControl, useExisting: FsPhoneField1Component },
   ],
@@ -106,16 +105,12 @@ export class FsPhoneField1Component
   public country: CountryCode;
 
   @Input()
-  public name: string;
-
-  @Input()
   public autocomplete = 'on';
 
   @HostBinding()
   public id = `example-tel-input-${FsPhoneField1Component.nextId++}`;
 
   public phoneNumberParts: FormGroup;
-
   public focused = false;
   public touched = false;
   public controlType = 'phone-input';
@@ -123,16 +118,12 @@ export class FsPhoneField1Component
   public extPrefix = '';
   public countryControl = new FormControl('');
   public ready$: Observable<boolean>;
-
-  selectedPortal: Portal<any>;
+  public selectedPortal: Portal<any>;
 
   @ViewChild('extNumberInput')
   private _extNumberInputRef: ElementRef;
 
-  @ViewChild('phoneNumberInput')
-  private _phoneNumberInputRef: ElementRef;
-
-  private _externalDataReady = false;
+  private _externalDataReady = false;  
   private _placeholder: string;
   private _required = false;
   private _disabled = false;
@@ -140,35 +131,32 @@ export class FsPhoneField1Component
   private _containerClick = new Subject<Element>();
   private _countrySelectOpened$ = new Subject<null>();
   private _destroy$ = new Subject<void>();
-
-  // Value Accessor
-  private _onTouched = () => {};
-  private _onChange: (value: IFsPhoneValue | string) => void = () => {};
+  private _onTouched = () => { };
+  private _onChange: (value: IFsPhoneValue | string) => void = () => { };
 
   constructor(
     @Optional()
     @Self()
     public ngControl: NgControl,
+    @Optional()
+    @Inject(PHONE_CONFIG)
+    private readonly _phoneConfig: IFsPhoneConfig,
     private _fb: FormBuilder,
     private _fm: FocusMonitor,
     private _el: ElementRef,
     private _phone: PhoneService,
     private _countriesStore: FsCountry,
     private _metadata: PhoneMetadataService,
-    @Optional()
-    @Inject(PHONE_CONFIG)
-    private readonly _phoneConfig: IFsPhoneConfig,
-    @SkipSelf()
-    private vc: ViewContainerRef,
+    private _formField: MatFormField,
+    private _matInput: MatInput,
   ) {
     this._initControls();
-    // this._registerValueAccessor();
-    // this._listenContainerClick();
-    // this._initResourcesReadyState();
+    this._registerValueAccessor();
+    this._listenContainerClick();
+    this._initResourcesReadyState();   
   }
 
-  ngAfterContentInit(): void {
-    debugger;
+  public ngAfterContentInit(): void {
     const portal = new DomPortal(this._el.nativeElement);
 
     const el = this._el;
@@ -185,7 +173,7 @@ export class FsPhoneField1Component
   }
 
   public get phoneNumberEl() {
-    return this._phoneNumberInputRef.nativeElement;
+    return this._el.nativeElement;
   }
 
   public get extNumberEl() {
@@ -201,7 +189,10 @@ export class FsPhoneField1Component
   }
 
   public get value(): IFsPhoneValue | string {
-    let value = this.phoneNumberParts.value as IFsPhoneValue;
+    let value = {
+      ...this.phoneNumberParts.value,
+      number: this._matInput.value,
+    } as IFsPhoneValue;
 
     if (this.mode === 'string') {
       // const phoneNumber = value.number.replace(/[^0-9.]/g, '');
@@ -259,23 +250,25 @@ export class FsPhoneField1Component
   }
 
   public get numberValue(): string {
-    return this.phoneNumberParts.get('number').value;
+    return this._matInput.value;
   }
 
   public get extValue(): string {
     return this.phoneNumberParts.get('ext').value;
   }
+
   public get countryIsoCodeValue(): string {
     return this.countryControl.value;
   }
 
   public ngOnInit(): void {
-    // this._initDefaultCountry();
-    // this._applyInternalValidation();
-    // this._listenWriteValue();
-    // this._listenPhonePartsChanges();
-    // this._listenCountryChanges();
-    // this._applyMaterialHacks();
+    this._initDefaultCountry();
+    this._applyInternalValidation();
+    this._listenWriteValue();
+    this._listenPhonePartsChanges();
+    this._listenCountryChanges();
+    this._applyMaterialHacks();
+    this._initEvents();
   }
 
   public ngOnDestroy(): void {
@@ -442,7 +435,7 @@ export class FsPhoneField1Component
     }
 
     if (this.codeValue && this.numberValue) {
-      if (!this._phone.isPhoneNumberValid(this.phoneNumberParts.value)) {
+      if (!this._phone.isPhoneNumberValid(this.value)) {
         isNotValid = true;
         validationErrors.invalid = 'Invalid number';
       }
@@ -496,7 +489,7 @@ export class FsPhoneField1Component
         ),
         tap((isSelectClick: boolean) => {
           if (!isSelectClick) {
-              this._fm.focusVia(this._phoneNumberInputRef, 'program');
+            this._fm.focusVia(this._el, 'program');
           }
         }),
         takeUntil(this._destroy$),
@@ -509,9 +502,10 @@ export class FsPhoneField1Component
   }
 
   private _initControls(): void {
+    this._formField.floatLabel = 'always';
     this.phoneNumberParts = this._fb.group({
       countryCode: '',
-      number: '',
+     //number: '',
       ext: '',
     });
   }
@@ -531,19 +525,34 @@ export class FsPhoneField1Component
   }
 
   private _listenPhonePartsChanges() {
-    this.phoneNumberParts.valueChanges
+    merge(
+      this.phoneNumberParts.valueChanges,
+    )    
       .pipe(
         takeUntil(this._destroy$),
       )
       .subscribe(() => {
-        if (this.empty) {
-          this._onChange(null);
-        } else {
-          this._onChange(this.value);
-        }
-
-        this.stateChanges.next();
+        this._phonePartsChange();
       });
+
+    fromEvent(this.phoneNumberEl, "input")
+      .pipe(
+        takeUntil(this._destroy$)
+      )
+      .subscribe((event: KeyboardEvent) => {
+        //this.phoneNumberParts.controls['number'].setValue((event.target as HTMLInputElement).value);
+        this._phonePartsChange();
+      });
+  }
+
+  private _phonePartsChange() {
+    if (this.empty) {
+      this._onChange(null);
+    } else {
+      this._onChange(this.value);
+    }
+
+    this.stateChanges.next();
   }
 
   private _listenCountryChanges() {
@@ -562,6 +571,37 @@ export class FsPhoneField1Component
    */
   private _applyMaterialHacks(): void {
     this._el.nativeElement.parentElement.style.width = 'auto';
+  }
+
+  private _initEvents(): void {
+    merge(
+      fromEvent(this.phoneNumberEl, "keyup"),
+      fromEvent(this.phoneNumberEl, "keydown"),
+      fromEvent(this.phoneNumberEl, "keypress"),
+      fromEvent(this.phoneNumberEl, "paste"),
+      fromEvent(this.phoneNumberEl, "blur"),
+    )
+      .pipe(
+        takeUntil(this._destroy$)
+      )
+      .subscribe((event: Event) => {
+        switch (event.type) {          
+          case 'keyup':
+            return this.phoneKeyup(event as KeyboardEvent);
+
+          case 'keydown':
+            return this.phoneKeydown(event as KeyboardEvent);
+
+          case 'keypress':
+            return this.phoneKeypress(event as KeyboardEvent);
+
+          case 'paste':
+            return this.phonePaste();
+
+          case 'blur':
+            return this.phoneFormat();
+        }
+      });
   }
 
   /**
@@ -591,7 +631,7 @@ export class FsPhoneField1Component
         if (!value) {
           this._initWithDefaultCountry();
         }
-      })
+      });
   }
 
   private _writeValue(value: IFsPhoneValue | string | number) {
@@ -606,7 +646,7 @@ export class FsPhoneField1Component
 
       try {
         phoneNumber = this._phone.parsePhoneNumber(value, this.country);
-      } catch (e) {}
+      } catch (e) { }
     } else if (value && typeof value === 'object') {
       if (value.isoCode) {
         this.country = value.isoCode as any;
@@ -646,9 +686,12 @@ export class FsPhoneField1Component
 
     this.phoneNumberParts.patchValue({
       countryCode: phoneNumber.countryCallingCode || '',
-      number: parsedNumber,
+      //number: parsedNumber,
       ext: phoneNumber.ext || '',
     }, { emitEvent: emitEvent });
+
+  
+    this._matInput.value = parsedNumber;
 
     this._setCountryCode(phoneNumber.country, emitEvent);
   }
