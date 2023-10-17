@@ -2,8 +2,8 @@ import { Component } from '@angular/core';
 
 @Component({
   selector: 'phone-input-with-string-mode',
-  templateUrl: 'phone-input-with-string-mode.component.html',
-  styleUrls: [ 'phone-input-with-string-mode.component.css' ]
+  templateUrl: './phone-input-with-string-mode.component.html',
+  styleUrls: ['./phone-input-with-string-mode.component.css'],
 })
 export class PhoneInputWithStringModeComponent {
 
@@ -11,9 +11,9 @@ export class PhoneInputWithStringModeComponent {
 
   public model = this.input;
 
-  constructor() {}
+  constructor() { }
 
-  changed(e) {
+  public changed(e) {
     console.log(e);
   }
 }

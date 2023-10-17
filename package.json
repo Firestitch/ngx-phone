@@ -2,7 +2,7 @@
   "name": "@firestitch/phone",
   "title": "Phone",
   "description": "@firestitch/phone",
-  "version": "12.5.1",
+  "version": "12.6.0",
   "repository": {
     "type": "git",
     "url": "https://github.com/Firestitch/ngx-phone"
@@ -46,8 +46,8 @@
     "@firestitch/autocomplete": "^12.0.0",
     "@firestitch/autocomplete-chips": "^12.0.0",
     "@firestitch/clear": "^12.0.0",
-    "@firestitch/common": "^12.0.0",
-    "@firestitch/component-tools": "^12.0.17",
+    "@firestitch/common": "^12.6.0",
+    "@firestitch/component-tools": "^12.0.19",
     "@firestitch/country": "^12.0.0",
     "@firestitch/date": "^12.0.0",
     "@firestitch/datepicker": "^12.11.6",
@@ -56,6 +56,7 @@
     "@firestitch/example": "^12.1.1",
     "@firestitch/form": "^12.2.0",
     "@firestitch/iframe": "^12.0.0",
+    "@firestitch/lint": "^12.0.18",
     "@firestitch/label": "^12.0.0",
     "@firestitch/menu": "^12.0.1",
     "@firestitch/message": "^12.3.1",

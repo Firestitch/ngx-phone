@@ -1,16 +1,11 @@
 <fieldset>
-  <legend>From Phone as Number type without calling code</legend>
+  <legend>Standard Format Phone Number</legend>
+  <div>{{ phoneString1 | fsPhone}}</div>
+  <div>{{ phoneString2 | fsPhone}}</div>
+</fieldset>
+
+<fieldset>
+  <legend>Numeric Phone Number</legend>
   {{ phoneNumber | fsPhone}}
 </fieldset>
 
-
-<fieldset>
-  <legend>From Phone as String type</legend>
-  {{ phoneString | fsPhone}}
-</fieldset>
-
-<fieldset>
-  <legend>From Phone as Object type</legend>
-  <fs-phone [phone]="phoneObject"></fs-phone>
-<!--  {{ phoneObject | fsPhone}}-->
-</fieldset>
