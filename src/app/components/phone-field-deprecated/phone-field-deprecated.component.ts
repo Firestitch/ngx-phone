@@ -1,5 +1,4 @@
 import {
-  AfterContentInit,
   ChangeDetectionStrategy,
   Component,
   ElementRef,
@@ -23,13 +22,12 @@ import {
 
 import { FocusMonitor } from '@angular/cdk/a11y';
 import { coerceBooleanProperty } from '@angular/cdk/coercion';
-import { DomPortal, Portal } from '@angular/cdk/portal';
-import { MatFormField, MatFormFieldControl } from '@angular/material/form-field';
-import { MatInput } from '@angular/material/input';
+import { MatFormFieldControl } from '@angular/material/form-field';
+
 
 import { FsCountry, IFsCountry } from '@firestitch/country';
 
-import { combineLatest, fromEvent, merge, Observable, ReplaySubject, Subject, timer } from 'rxjs';
+import { combineLatest, merge, Observable, ReplaySubject, Subject, timer } from 'rxjs';
 import {
   distinctUntilChanged,
   filter,
@@ -45,7 +43,6 @@ import {
 
 import { AsYouType, CountryCode, parsePhoneNumberFromString, PhoneNumber } from 'libphonenumber-js';
 
-
 import { IFsPhoneConfig } from '../../interfaces/phone-config.interface';
 import { IFsPhoneValue } from '../../interfaces/phone-value.interface';
 import { PHONE_CONFIG } from '../../providers';
@@ -54,16 +51,16 @@ import { PhoneService } from '../../services/phone.service';
 
 
 @Component({
-  selector: '[fsPhoneField]',
-  templateUrl: './phone-field.component.html',
-  styleUrls: ['./phone-field.component.scss'],
+  selector: 'fs-phone-field',
+  templateUrl: './phone-field-deprecated.component.html',
+  styleUrls: ['./phone-field-deprecated.component.scss'],
   providers: [
-    { provide: MatFormFieldControl, useExisting: FsPhoneFieldComponent },
+    { provide: MatFormFieldControl, useExisting: FsPhoneFieldDeprecatedComponent },
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class FsPhoneFieldComponent implements OnInit, OnDestroy, ControlValueAccessor,
-  MatFormFieldControl<IFsPhoneValue | string>, Validator, AfterContentInit {
+export class FsPhoneFieldDeprecatedComponent implements OnInit, OnDestroy, ControlValueAccessor,
+  MatFormFieldControl<IFsPhoneValue | string>, Validator {
 
   public static nextId = 0;
 
@@ -104,12 +101,16 @@ export class FsPhoneFieldComponent implements OnInit, OnDestroy, ControlValueAcc
   public country: CountryCode;
 
   @Input()
+  public name: string;
+
+  @Input()
   public autocomplete = 'on';
 
   @HostBinding()
-  public id = `example-tel-input-${FsPhoneFieldComponent.nextId++}`;
+  public id = `example-tel-input-${FsPhoneFieldDeprecatedComponent.nextId++}`;
 
   public phoneNumberParts: FormGroup;
+
   public focused = false;
   public touched = false;
   public controlType = 'phone-input';
@@ -117,10 +118,12 @@ export class FsPhoneFieldComponent implements OnInit, OnDestroy, ControlValueAcc
   public extPrefix = '';
   public countryControl = new FormControl('');
   public ready$: Observable<boolean>;
-  public selectedPortal: Portal<any>;
 
   @ViewChild('extNumberInput')
   private _extNumberInputRef: ElementRef;
+
+  @ViewChild('phoneNumberInput')
+  private _phoneNumberInputRef: ElementRef;
 
   private _externalDataReady = false;
   private _placeholder: string;
@@ -130,24 +133,24 @@ export class FsPhoneFieldComponent implements OnInit, OnDestroy, ControlValueAcc
   private _containerClick = new Subject<Element>();
   private _countrySelectOpened$ = new Subject<null>();
   private _destroy$ = new Subject<void>();
-  private _onTouched: () => void;
-  private _onChange: (value: IFsPhoneValue | string) => void;
+
+  // Value Accessor
+  private _onTouched = () => { };
+  private _onChange: (value: IFsPhoneValue | string) => void = () => { };
 
   constructor(
     @Optional()
     @Self()
     public ngControl: NgControl,
-    @Optional()
-    @Inject(PHONE_CONFIG)
-    private readonly _phoneConfig: IFsPhoneConfig,
     private _fb: FormBuilder,
     private _fm: FocusMonitor,
     private _el: ElementRef,
     private _phone: PhoneService,
     private _countriesStore: FsCountry,
     private _metadata: PhoneMetadataService,
-    private _formField: MatFormField,
-    private _matInput: MatInput,
+    @Optional()
+    @Inject(PHONE_CONFIG)
+    private readonly _phoneConfig: IFsPhoneConfig,
   ) {
     this._initControls();
     this._registerValueAccessor();
@@ -155,24 +158,12 @@ export class FsPhoneFieldComponent implements OnInit, OnDestroy, ControlValueAcc
     this._initResourcesReadyState();
   }
 
-  public ngAfterContentInit(): void {
-    const portal = new DomPortal(this._el.nativeElement);
-
-    const el = this._el;
-
-    el.nativeElement.childNodes.forEach((c) => {
-      el.nativeElement.offsetParent.append(c);
-    });
-
-    this.selectedPortal = portal;
-  }
-
   public get countries$(): Observable<IFsCountry[]> {
     return this._countriesStore.countries$;
   }
 
   public get phoneNumberEl() {
-    return this._el.nativeElement;
+    return this._phoneNumberInputRef.nativeElement;
   }
 
   public get extNumberEl() {
@@ -188,10 +179,7 @@ export class FsPhoneFieldComponent implements OnInit, OnDestroy, ControlValueAcc
   }
 
   public get value(): IFsPhoneValue | string {
-    let value = {
-      ...this.phoneNumberParts.value,
-      number: this._matInput.value,
-    } as IFsPhoneValue;
+    let value = this.phoneNumberParts.value as IFsPhoneValue;
 
     if (this.mode === 'string') {
       // const phoneNumber = value.number.replace(/[^0-9.]/g, '');
@@ -250,13 +238,12 @@ export class FsPhoneFieldComponent implements OnInit, OnDestroy, ControlValueAcc
   }
 
   public get numberValue(): string {
-    return this._matInput.value;
+    return this.phoneNumberParts.get('number').value;
   }
 
   public get extValue(): string {
     return this.phoneNumberParts.get('ext').value;
   }
-
   public get countryIsoCodeValue(): string {
     return this.countryControl.value;
   }
@@ -268,7 +255,6 @@ export class FsPhoneFieldComponent implements OnInit, OnDestroy, ControlValueAcc
     this._listenPhonePartsChanges();
     this._listenCountryChanges();
     this._applyMaterialHacks();
-    this._initEvents();
   }
 
   public ngOnDestroy(): void {
@@ -437,7 +423,7 @@ export class FsPhoneFieldComponent implements OnInit, OnDestroy, ControlValueAcc
     }
 
     if (this.codeValue && this.numberValue) {
-      if (!this._phone.isPhoneNumberValid(this.value)) {
+      if (!this._phone.isPhoneNumberValid(this.phoneNumberParts.value)) {
         isNotValid = true;
         validationErrors.invalid = 'Invalid number';
       }
@@ -467,7 +453,7 @@ export class FsPhoneFieldComponent implements OnInit, OnDestroy, ControlValueAcc
   }
 
   private _registerValueAccessor(): void {
-    if (this.ngControl !== null) {
+    if (this.ngControl != null) {
       // Setting the value accessor directly (instead of using
       // the providers) to avoid running into a circular import.
       this.ngControl.valueAccessor = this;
@@ -491,7 +477,7 @@ export class FsPhoneFieldComponent implements OnInit, OnDestroy, ControlValueAcc
         ),
         tap((isSelectClick: boolean) => {
           if (!isSelectClick) {
-            this._fm.focusVia(this._el, 'program');
+            this._fm.focusVia(this._phoneNumberInputRef, 'program');
           }
         }),
         takeUntil(this._destroy$),
@@ -504,10 +490,9 @@ export class FsPhoneFieldComponent implements OnInit, OnDestroy, ControlValueAcc
   }
 
   private _initControls(): void {
-    this._formField.floatLabel = 'always';
     this.phoneNumberParts = this._fb.group({
       countryCode: '',
-      //number: '',
+      number: '',
       ext: '',
     });
   }
@@ -527,33 +512,19 @@ export class FsPhoneFieldComponent implements OnInit, OnDestroy, ControlValueAcc
   }
 
   private _listenPhonePartsChanges() {
-    merge(
-      this.phoneNumberParts.valueChanges,
-    )
+    this.phoneNumberParts.valueChanges
       .pipe(
         takeUntil(this._destroy$),
       )
       .subscribe(() => {
-        this._phonePartsChange();
+        if (this.empty) {
+          this._onChange(null);
+        } else {
+          this._onChange(this.value);
+        }
+
+        this.stateChanges.next();
       });
-
-    fromEvent(this.phoneNumberEl, 'input')
-      .pipe(
-        takeUntil(this._destroy$),
-      )
-      .subscribe((event: KeyboardEvent) => {
-        this._phonePartsChange();
-      });
-  }
-
-  private _phonePartsChange() {
-    if (this.empty) {
-      this._onChange(null);
-    } else {
-      this._onChange(this.value);
-    }
-
-    this.stateChanges.next();
   }
 
   private _listenCountryChanges() {
@@ -572,37 +543,6 @@ export class FsPhoneFieldComponent implements OnInit, OnDestroy, ControlValueAcc
    */
   private _applyMaterialHacks(): void {
     this._el.nativeElement.parentElement.style.width = 'auto';
-  }
-
-  private _initEvents(): void {
-    merge(
-      fromEvent(this.phoneNumberEl, 'keyup'),
-      fromEvent(this.phoneNumberEl, 'keydown'),
-      fromEvent(this.phoneNumberEl, 'keypress'),
-      fromEvent(this.phoneNumberEl, 'paste'),
-      fromEvent(this.phoneNumberEl, 'blur'),
-    )
-      .pipe(
-        takeUntil(this._destroy$),
-      )
-      .subscribe((event: Event) => {
-        switch (event.type) {
-          case 'keyup':
-            return this.phoneKeyup(event as KeyboardEvent);
-
-          case 'keydown':
-            return this.phoneKeydown(event as KeyboardEvent);
-
-          case 'keypress':
-            return this.phoneKeypress(event as KeyboardEvent);
-
-          case 'paste':
-            return this.phonePaste();
-
-          case 'blur':
-            return this.phoneFormat();
-        }
-      });
   }
 
   /**
@@ -625,7 +565,6 @@ export class FsPhoneFieldComponent implements OnInit, OnDestroy, ControlValueAcc
         switchMap(() => {
           return this._writeValue$;
         }),
-        takeUntil(this._destroy$),
       )
       .subscribe((value) => {
         this._writeValue(value);
@@ -688,12 +627,9 @@ export class FsPhoneFieldComponent implements OnInit, OnDestroy, ControlValueAcc
 
     this.phoneNumberParts.patchValue({
       countryCode: phoneNumber.countryCallingCode || '',
-      //number: parsedNumber,
+      number: parsedNumber,
       ext: phoneNumber.ext || '',
     }, { emitEvent });
-
-
-    this._matInput.value = parsedNumber;
 
     this._setCountryCode(phoneNumber.country, emitEvent);
   }

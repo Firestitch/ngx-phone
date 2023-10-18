@@ -68,17 +68,22 @@ export class PhoneService {
     }
   }
 
-  public isPhoneNumberValid(value: IFsPhoneValue): boolean {
+  public isPhoneNumberValid(value: IFsPhoneValue | string): boolean {
     let phoneNumber: PhoneNumber;
 
     try {
-      let phone = value.countryCode + value.number;
 
-      if (value.countryCode.indexOf('+') !== 0) {
-        phone = `+${phone}`;
+      if(typeof(value) === 'string') {
+        phoneNumber = parsePhoneNumber(value);
+      } else {
+        let phone = value.countryCode + value.number;
+
+        if (value.countryCode.indexOf('+') !== 0) {
+          phone = `+${phone}`;
+        }
+
+        phoneNumber = parsePhoneNumber(phone);
       }
-
-      phoneNumber = parsePhoneNumber(phone);
 
       return phoneNumber.isValid() || phoneNumber.isPossible();
     } catch (e) {

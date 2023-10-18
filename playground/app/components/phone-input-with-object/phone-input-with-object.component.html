@@ -1,11 +1,13 @@
 <form fsForm [submit]="save">
   <mat-form-field>
     <mat-label>Phone number</mat-label>
-    <fs-phone-field
+    <input 
+      matInput
+      fsPhoneField
+      [fsAutofocus]="true"
+      [required]="true"
       [(ngModel)]="model"
-      name="phone"
-      [required]="true">
-    </fs-phone-field>
+      name="test">
     <mat-hint>enter your phone number</mat-hint>
   </mat-form-field>
 

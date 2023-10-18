@@ -1,12 +1,10 @@
 import {
   Directive,
   ElementRef,
-  forwardRef,
+  HostListener,
   OnInit,
-  HostListener
+  forwardRef,
 } from '@angular/core';
-
-
 import { NG_VALUE_ACCESSOR } from '@angular/forms';
 
 import IMask from 'imask';
@@ -15,46 +13,47 @@ import { toString } from 'lodash-es';
 
 @Directive({
   selector: '[fsPhone]',
-  providers: [ {
+  providers: [{
     provide: NG_VALUE_ACCESSOR,
     useExisting: forwardRef(() => FsPhoneDirective),
-    multi: true
-  }]
+    multi: true,
+  }],
 })
 export class FsPhoneDirective implements OnInit {
 
-  @HostListener('focus') onfocus() {
+  private _imask;
+
+  private _onTouched: () => void;
+  private _onChange: (value: any) => void;
+
+  constructor(private _elementRef: ElementRef) { }
+
+  @HostListener('focus')
+  public onfocus() {
     const length = this._elementRef.nativeElement.value.length;
     setTimeout(() => {
       this._elementRef.nativeElement.setSelectionRange(length, length);
     }, 5);
   }
 
-  @HostListener('input') input() {
+  @HostListener('input')
+  public input() {
     setTimeout(() => {
       this._onChange(this._imask.unmaskedValue);
     });
   }
 
-  private _imask;
-
-  _onTouched = () => {};
-  _onChange = (value: any) => {};
-
-  registerOnChange(fn: (value: any) => any): void {
-    this._onChange = fn
+  public registerOnChange(fn: (value: any) => any): void {
+    this._onChange = fn;
   }
 
-  registerOnTouched(fn: () => any): void {
-    this._onTouched = fn
-  }
-
-  constructor(private _elementRef: ElementRef) {
+  public registerOnTouched(fn: () => any): void {
+    this._onTouched = fn;
   }
 
   public ngOnInit() {
     const maskOptions = {
-      mask: '(000) 000-0000 ext. 00000'
+      mask: '(000) 000-0000 ext. 00000',
     };
 
     this._imask = IMask(this._elementRef.nativeElement, maskOptions);
