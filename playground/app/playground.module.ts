@@ -18,6 +18,7 @@ import { PhoneInputWithObjectComponent } from './components/phone-input-with-obj
 import { PhoneInputWithStringModeComponent } from './components/phone-input-with-string-mode/phone-input-with-string-mode.component';
 import { PhoneInputWithStringComponent } from './components/phone-input-with-string/phone-input-with-string.component';
 import { FsMaterialModule } from './material.module';
+import { RouterModule } from '@angular/router';
 
 
 @NgModule({
@@ -32,6 +33,7 @@ import { FsMaterialModule } from './material.module';
     FormsModule,
     FsFormModule,
     FsCommonModule,
+    RouterModule.forRoot([]),
     FsMessageModule.forRoot(),
     FsExampleModule.forRoot(),
     FsFormModule.forRoot(),
