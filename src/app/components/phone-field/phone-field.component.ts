@@ -471,6 +471,11 @@ export class FsPhoneFieldComponent implements OnInit, OnDestroy, ControlValueAcc
       // Setting the value accessor directly (instead of using
       // the providers) to avoid running into a circular import.
       this.ngControl.valueAccessor = this;
+
+      this.ngControl.statusChanges
+        .subscribe((state) => {
+          this.disabled = state === 'DISABLED';
+        });
     }
   }
 

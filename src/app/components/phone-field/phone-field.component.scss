@@ -9,25 +9,27 @@
   }
 }
 
-::ng-deep .fs-phone-country-pane {
-  mat-select-trigger {
-    position: relative;
-
-    fs-country-phone-code {
+::ng-deep {
+  .fs-phone-country-pane {
+    mat-select-trigger {
       position: relative;
-      top: 1px;
-    }
-  }
 
-  .mat-option-text {
-    display: inline-flex;
-
-    .fs-phone-country-code {
-      order: -1;
+      fs-country-phone-code {
+        position: relative;
+        top: 1px;
+      }
     }
 
-    .fs-phone-country-flag {
-      order: -2;
+    .mat-option-text {
+      display: inline-flex;
+
+      .fs-phone-country-code {
+        order: -1;
+      }
+
+      .fs-phone-country-flag {
+        order: -2;
+      }
     }
   }
 }
@@ -42,6 +44,12 @@
 }
 
 .phone-group {
+  ::ng-deep {
+    .mat-select-arrow-wrapper {
+      height: auto;
+    }
+  }
+
   &.with-emoji {
     align-items: baseline;
   }

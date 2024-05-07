@@ -4,6 +4,7 @@
     <input 
       matInput
       fsPhoneField
+      [fsAclEnable]="[{ permission: 'x' }]"
       [fsAutofocus]="true"
       [required]="true"
       [(ngModel)]="model"
