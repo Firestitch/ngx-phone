@@ -50,6 +50,12 @@
     }
   }
 
+  &.disabled {
+    fs-country-phone-code {
+      opacity: .5;
+    }
+  }
+
   &.with-emoji {
     align-items: baseline;
   }

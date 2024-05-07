@@ -1,6 +1,7 @@
 <div 
     class="phone-group" 
     role="group"
+    [class.disabled]="disabled"
     [class.with-emoji]="emojiSupported"
     (focusin)="onFocusIn($event)"
     (focusout)="onFocusOut($event)">
