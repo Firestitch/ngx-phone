@@ -87,11 +87,9 @@ export class FsPhoneFieldComponent implements OnInit, OnDestroy, ControlValueAcc
   public set disabled(value: boolean) {
     this._disabled = coerceBooleanProperty(value);
     if (this._disabled) {
-      this.phoneNumberParts.disable();
-      this.countryControl.disable();
+      this.countryControl.disable({ emitEvent: false });
     } else {
-      this.phoneNumberParts.enable();
-      this.countryControl.enable();
+      this.countryControl.enable({ emitEvent: false });
     }
 
     this.stateChanges.next();
@@ -242,7 +240,6 @@ export class FsPhoneFieldComponent implements OnInit, OnDestroy, ControlValueAcc
     }
 
     return !this.value && this._externalDataReady;
-
   }
 
   public get codeValue(): string {
@@ -412,7 +409,7 @@ export class FsPhoneFieldComponent implements OnInit, OnDestroy, ControlValueAcc
   public setDescribedByIds(ids: string[]) { }
 
   public writeValue(value: IFsPhoneValue | string) {
-    this._writeValue$.next(value);
+   this._writeValue$.next(value);
   }
 
   public registerOnChange(onChange: (value: IFsPhoneValue) => void): void {
@@ -512,7 +509,6 @@ export class FsPhoneFieldComponent implements OnInit, OnDestroy, ControlValueAcc
     this._formField.floatLabel = 'always';
     this.phoneNumberParts = this._fb.group({
       countryCode: '',
-      //number: '',
       ext: '',
     });
   }
@@ -546,7 +542,7 @@ export class FsPhoneFieldComponent implements OnInit, OnDestroy, ControlValueAcc
       .pipe(
         takeUntil(this._destroy$),
       )
-      .subscribe((event: KeyboardEvent) => {
+      .subscribe(() => {
         this._phonePartsChange();
       });
   }
@@ -620,7 +616,7 @@ export class FsPhoneFieldComponent implements OnInit, OnDestroy, ControlValueAcc
   }
 
   private _updateExt(code: CountryCode) {
-    this.extPrefix = this._phone.getExtPrefix(code);
+    this.extPrefix = code ? this._phone.getExtPrefix(code) : '';
   }
 
   private _listenWriteValue() {
