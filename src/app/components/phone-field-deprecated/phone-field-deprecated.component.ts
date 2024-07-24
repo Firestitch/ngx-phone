@@ -13,9 +13,9 @@ import {
 } from '@angular/core';
 import {
   ControlValueAccessor,
-  FormBuilder,
-  FormControl,
-  FormGroup,
+  UntypedFormBuilder,
+  UntypedFormControl,
+  UntypedFormGroup,
   NgControl, ValidationErrors,
   Validator,
 } from '@angular/forms';
@@ -109,14 +109,14 @@ export class FsPhoneFieldDeprecatedComponent implements OnInit, OnDestroy, Contr
   @HostBinding()
   public id = `example-tel-input-${FsPhoneFieldDeprecatedComponent.nextId++}`;
 
-  public phoneNumberParts: FormGroup;
+  public phoneNumberParts: UntypedFormGroup;
 
   public focused = false;
   public touched = false;
   public controlType = 'phone-input';
   public stateChanges = new Subject<void>();
   public extPrefix = '';
-  public countryControl = new FormControl('');
+  public countryControl = new UntypedFormControl('');
   public ready$: Observable<boolean>;
 
   @ViewChild('extNumberInput')
@@ -142,7 +142,7 @@ export class FsPhoneFieldDeprecatedComponent implements OnInit, OnDestroy, Contr
     @Optional()
     @Self()
     public ngControl: NgControl,
-    private _fb: FormBuilder,
+    private _fb: UntypedFormBuilder,
     private _fm: FocusMonitor,
     private _el: ElementRef,
     private _phone: PhoneService,
@@ -409,7 +409,7 @@ export class FsPhoneFieldDeprecatedComponent implements OnInit, OnDestroy, Contr
     this._onTouched = onTouched;
   }
 
-  public validate({ value }: FormControl) {
+  public validate({ value }: UntypedFormControl) {
     const validationErrors: ValidationErrors = {};
     let isNotValid = false;
 

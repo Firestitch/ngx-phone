@@ -14,9 +14,9 @@ import {
 } from '@angular/core';
 import {
   ControlValueAccessor,
-  FormBuilder,
-  FormControl,
-  FormGroup,
+  UntypedFormBuilder,
+  UntypedFormControl,
+  UntypedFormGroup,
   NgControl, ValidationErrors,
   Validator,
 } from '@angular/forms';
@@ -107,13 +107,13 @@ export class FsPhoneFieldComponent implements OnInit, OnDestroy, ControlValueAcc
   @HostBinding()
   public id = `example-tel-input-${FsPhoneFieldComponent.nextId++}`;
 
-  public phoneNumberParts: FormGroup;
+  public phoneNumberParts: UntypedFormGroup;
   public focused = false;
   public touched = false;
   public controlType = 'phone-input';
   public stateChanges = new Subject<void>();
   public extPrefix = '';
-  public countryControl = new FormControl('');
+  public countryControl = new UntypedFormControl('');
   public ready$: Observable<boolean>;
   public selectedPortal: Portal<any>;
 
@@ -138,7 +138,7 @@ export class FsPhoneFieldComponent implements OnInit, OnDestroy, ControlValueAcc
     @Optional()
     @Inject(PHONE_CONFIG)
     private readonly _phoneConfig: IFsPhoneConfig,
-    private _fb: FormBuilder,
+    private _fb: UntypedFormBuilder,
     private _fm: FocusMonitor,
     private _el: ElementRef,
     private _phone: PhoneService,
@@ -420,7 +420,7 @@ export class FsPhoneFieldComponent implements OnInit, OnDestroy, ControlValueAcc
     this._onTouched = onTouched;
   }
 
-  public validate({ value }: FormControl) {
+  public validate({ value }: UntypedFormControl) {
     const validationErrors: ValidationErrors = {};
     let isNotValid = false;
 
