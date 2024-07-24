@@ -28,9 +28,9 @@
                 "output": "./assets/"
               },
               {
-                "glob": "metadata.full.json",
-                "input": "./node_modules/libphonenumber-js/",
-                "output": "./assets/"
+                "glob": "**/*",
+                "input": "./src/app/assets",
+                "output": "./assets/phone"
               },
               {
                 "glob": "**/*",

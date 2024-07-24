@@ -11,7 +11,7 @@ import { MetadataJson } from 'libphonenumber-js';
 import { IFsPhoneConfig } from '../interfaces/phone-config.interface';
 import { PHONE_CONFIG } from '../providers';
 
-const DEFAULT_LOAD_PATH = '/assets/metadata.full.json';
+const DEFAULT_LOAD_PATH = '/assets/phone/metadata.min.json';
 
 
 @Injectable({

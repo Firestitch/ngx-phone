@@ -1,9 +1,9 @@
 @use '@angular/material' as mat;
-@import '~@firestitch/component-tools/assets/playground.scss';
-@import '../src/app/styles';
-@import "~@firestitch/form/styles";
-@import "~@firestitch/message/styles";
-@import "~@firestitch/skeleton/styles";
+@import '@firestitch/component-tools/assets/playground.scss';
+@import "@firestitch/form/styles";
+@import "@firestitch/message/styles";
+@import "@firestitch/skeleton/styles";
 
+@import '../src/app/styles';
 
 @include fs-form($app-theme);
