@@ -74,13 +74,13 @@ export class FsPhoneFieldComponent implements OnInit, OnDestroy, ControlValueAcc
   @Input()
   public set placeholder(placeholder: string) {
     this._placeholder = placeholder;
-    this.stateChanges.next();
+    this.stateChanges.next(null);
   }
 
   @Input()
   public set required(value: boolean) {
     this._required = coerceBooleanProperty(value);
-    this.stateChanges.next();
+    this.stateChanges.next(null);
   }
 
   @Input()
@@ -92,7 +92,7 @@ export class FsPhoneFieldComponent implements OnInit, OnDestroy, ControlValueAcc
       this.countryControl.enable({ emitEvent: false });
     }
 
-    this.stateChanges.next();
+    this.stateChanges.next(null);
   }
 
   @Input()
@@ -403,7 +403,7 @@ export class FsPhoneFieldComponent implements OnInit, OnDestroy, ControlValueAcc
   }
 
   public countrySelectOpened(): void {
-    this._countrySelectOpened$.next();
+    this._countrySelectOpened$.next(null);
   }
 
   public setDescribedByIds(ids: string[]) { }
@@ -446,7 +446,7 @@ export class FsPhoneFieldComponent implements OnInit, OnDestroy, ControlValueAcc
   public onFocusIn(event: FocusEvent) {
     if (!this.focused) {
       this.focused = true;
-      this.stateChanges.next();
+      this.stateChanges.next(null);
     }
   }
 
@@ -455,7 +455,7 @@ export class FsPhoneFieldComponent implements OnInit, OnDestroy, ControlValueAcc
       this.touched = true;
       this.focused = false;
       this._onTouched();
-      this.stateChanges.next();
+      this.stateChanges.next(null);
     }
   }
 
@@ -521,7 +521,7 @@ export class FsPhoneFieldComponent implements OnInit, OnDestroy, ControlValueAcc
         }),
         tap((state) => {
           this._externalDataReady = state;
-          this.stateChanges.next();
+          this.stateChanges.next(null);
         }),
         shareReplay(1),
       );
@@ -554,7 +554,7 @@ export class FsPhoneFieldComponent implements OnInit, OnDestroy, ControlValueAcc
       this._onChange(this.value);
     }
 
-    this.stateChanges.next();
+    this.stateChanges.next(null);
   }
 
   private _listenCountryChanges() {

@@ -71,13 +71,13 @@ export class FsPhoneFieldDeprecatedComponent implements OnInit, OnDestroy, Contr
   @Input()
   public set placeholder(placeholder: string) {
     this._placeholder = placeholder;
-    this.stateChanges.next();
+    this.stateChanges.next(null);
   }
 
   @Input()
   public set required(value: boolean) {
     this._required = coerceBooleanProperty(value);
-    this.stateChanges.next();
+    this.stateChanges.next(null);
   }
 
   @Input()
@@ -91,7 +91,7 @@ export class FsPhoneFieldDeprecatedComponent implements OnInit, OnDestroy, Contr
       this.countryControl.enable();
     }
 
-    this.stateChanges.next();
+    this.stateChanges.next(null);
   }
 
   @Input()
@@ -392,7 +392,7 @@ export class FsPhoneFieldDeprecatedComponent implements OnInit, OnDestroy, Contr
   }
 
   public countrySelectOpened(): void {
-    this._countrySelectOpened$.next();
+    this._countrySelectOpened$.next(null);
   }
 
   public setDescribedByIds(ids: string[]) { }
@@ -435,7 +435,7 @@ export class FsPhoneFieldDeprecatedComponent implements OnInit, OnDestroy, Contr
   public onFocusIn(event: FocusEvent) {
     if (!this.focused) {
       this.focused = true;
-      this.stateChanges.next();
+      this.stateChanges.next(null);
     }
   }
 
@@ -444,7 +444,7 @@ export class FsPhoneFieldDeprecatedComponent implements OnInit, OnDestroy, Contr
       this.touched = true;
       this.focused = false;
       this._onTouched();
-      this.stateChanges.next();
+      this.stateChanges.next(null);
     }
   }
 
@@ -505,7 +505,7 @@ export class FsPhoneFieldDeprecatedComponent implements OnInit, OnDestroy, Contr
         }),
         tap((state) => {
           this._externalDataReady = state;
-          this.stateChanges.next();
+          this.stateChanges.next(null);
         }),
         shareReplay(1),
       );
@@ -523,7 +523,7 @@ export class FsPhoneFieldDeprecatedComponent implements OnInit, OnDestroy, Contr
           this._onChange(this.value);
         }
 
-        this.stateChanges.next();
+        this.stateChanges.next(null);
       });
   }
 
