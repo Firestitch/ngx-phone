@@ -24,8 +24,8 @@
               "playground/assets",
               {
                 "glob": "**/*",
-                "input": "./node_modules/@firestitch/country/assets/",
-                "output": "./assets/"
+                "input": "./node_modules/@firestitch/country/assets",
+                "output": "./assets/country"
               },
               {
                 "glob": "**/*",
