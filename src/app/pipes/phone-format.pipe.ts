@@ -1,6 +1,5 @@
 import { Pipe, PipeTransform } from '@angular/core';
 
-import { IFsPhoneValue } from '../interfaces/phone-value.interface';
 import { formatPhoneNumber } from '../helpers/format-phone-number';
 
 
@@ -93,7 +92,7 @@ export class FsPhonePipe implements PipeTransform {
     }
   */
 
-  public transform(value: number | string | IFsPhoneValue): string {
+  public transform(value: number | string): string {
     if (!value) {
       return '';
     }
@@ -111,30 +110,8 @@ export class FsPhonePipe implements PipeTransform {
     return this._fallbackParse(value);
   }
 
-  private _fallbackParse(value: number | string | IFsPhoneValue) {
-    let str: string;
-
-    switch (typeof value) {
-      case 'number': {
-        str = formatPhoneNumber('' + value);
-      } break;
-
-      case 'object': {
-        str = `${value.countryCode} ${value.number}`;
-
-        if (value.emoji) {
-          str = `${value.emoji} ${str}`;
-        }
-
-        if (value.ext) {
-          str = `${str} ext. ${value.ext}`;
-        }
-      } break;
-
-      default: {
-        str = formatPhoneNumber(value);
-      }
-    }
+  private _fallbackParse(value: number | string) {
+    const str = formatPhoneNumber(`${value}`);
 
     return str;
   }
