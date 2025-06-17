@@ -11,8 +11,6 @@ import { fromFetch } from 'rxjs/fetch';
 import { IFsPhoneConfig } from '../interfaces/phone-config.interface';
 import { PHONE_CONFIG } from '../providers';
 
-const DEFAULT_LOAD_PATH = '/assets/phone/metadata.min.json';
-
 
 @Injectable({
   providedIn: 'root',
@@ -45,7 +43,8 @@ export class PhoneMetadataService {
   }
 
   private _loadMetadata(): void {
-    fromFetch(this._phoneConfig?.metaDataPath || DEFAULT_LOAD_PATH)
+    const assetPath = this._phoneConfig?.assetPath || '/assets/phone';
+    fromFetch(`${assetPath}/metadata.min.json`)
       .pipe(
         switchMap((response) => response.json()),
         delayedRetry(2000, 3),

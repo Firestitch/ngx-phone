@@ -6,6 +6,6 @@ export interface IPhoneConfig {
 }
 
 export interface IFsPhoneConfig {
-  metaDataPath?: string;
+  assetPath?: string;
   isoCountryCode?: CountryCode;
 }
