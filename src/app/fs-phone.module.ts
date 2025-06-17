@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { ModuleWithProviders, NgModule, Optional } from '@angular/core';
+import { ModuleWithProviders, NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { PortalModule } from '@angular/cdk/portal';
@@ -16,7 +16,7 @@ import { FsPhoneComponent } from './components/phone/phone.component';
 import { FsPhoneDirective } from './directives/phone.directive';
 import { IFsPhoneConfig } from './interfaces/phone-config.interface';
 import { FsPhonePipe } from './pipes/phone-format.pipe';
-import { PHONE_CONFIG, PHONE_CONFIG_ROOT } from './providers';
+import { PHONE_CONFIG_ROOT } from './providers';
 import { FS_PHONE_CONFIG } from './providers/fs-phone-config';
 
 
@@ -57,18 +57,14 @@ export class FsPhoneModule {
       providers: [
         { provide: PHONE_CONFIG_ROOT, useValue: config },
         {
-          provide: PHONE_CONFIG,
-          useFactory: phoneConfigFactory,
-          deps: [PHONE_CONFIG_ROOT, [new Optional(), FS_PHONE_CONFIG]],
+          provide: FS_PHONE_CONFIG,
+          useFactory: () => {
+            return {
+              ...config,
+            };
+          },
         },
       ],
     };
   }
-}
-
-export function phoneConfigFactory(config, fsConfig: IFsPhoneConfig) {
-  return {
-    ...fsConfig,
-    ...config,
-  };
 }

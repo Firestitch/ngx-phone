@@ -9,7 +9,7 @@ import { MetadataJson } from 'libphonenumber-js';
 import { fromFetch } from 'rxjs/fetch';
 
 import { IFsPhoneConfig } from '../interfaces/phone-config.interface';
-import { PHONE_CONFIG } from '../providers';
+import { FS_PHONE_CONFIG } from '../providers';
 
 
 @Injectable({
@@ -21,7 +21,8 @@ export class PhoneMetadataService {
   private _ready$ = new BehaviorSubject<boolean>(false);
 
   constructor(
-    @Optional() @Inject(PHONE_CONFIG) private readonly _phoneConfig: IFsPhoneConfig,
+    @Optional() @Inject(FS_PHONE_CONFIG) 
+    private readonly _phoneConfig: IFsPhoneConfig,
   ) {
     this._loadMetadata();
   }
@@ -43,7 +44,9 @@ export class PhoneMetadataService {
   }
 
   private _loadMetadata(): void {
-    const assetPath = this._phoneConfig?.assetPath || '/assets/phone';
+    const assetPath = (this._phoneConfig?.assetPath || '/assets/phone')
+      .replace(/([^:]\/)\/+/g, '$1');
+
     fromFetch(`${assetPath}/metadata.min.json`)
       .pipe(
         switchMap((response) => response.json()),

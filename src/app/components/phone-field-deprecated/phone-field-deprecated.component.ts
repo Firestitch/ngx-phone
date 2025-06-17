@@ -13,10 +13,11 @@ import {
 } from '@angular/core';
 import {
   ControlValueAccessor,
+  NgControl,
   UntypedFormBuilder,
   UntypedFormControl,
   UntypedFormGroup,
-  NgControl, ValidationErrors,
+  ValidationErrors,
   Validator,
 } from '@angular/forms';
 
@@ -45,7 +46,7 @@ import { AsYouType, CountryCode, parsePhoneNumberFromString, PhoneNumber } from 
 
 import { IFsPhoneConfig } from '../../interfaces/phone-config.interface';
 import { IFsPhoneValue } from '../../interfaces/phone-value.interface';
-import { PHONE_CONFIG } from '../../providers';
+import { FS_PHONE_CONFIG } from '../../providers';
 import { PhoneMetadataService } from '../../services/phone-metadata.service';
 import { PhoneService } from '../../services/phone.service';
 
@@ -149,7 +150,7 @@ export class FsPhoneFieldDeprecatedComponent implements OnInit, OnDestroy, Contr
     private _countriesStore: FsCountry,
     private _metadata: PhoneMetadataService,
     @Optional()
-    @Inject(PHONE_CONFIG)
+    @Inject(FS_PHONE_CONFIG)
     private readonly _phoneConfig: IFsPhoneConfig,
   ) {
     this._initControls();

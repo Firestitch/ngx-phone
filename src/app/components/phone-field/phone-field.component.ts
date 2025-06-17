@@ -14,10 +14,11 @@ import {
 } from '@angular/core';
 import {
   ControlValueAccessor,
+  NgControl,
   UntypedFormBuilder,
   UntypedFormControl,
   UntypedFormGroup,
-  NgControl, ValidationErrors,
+  ValidationErrors,
   Validator,
 } from '@angular/forms';
 
@@ -45,10 +46,9 @@ import {
 
 import { AsYouType, CountryCode, parsePhoneNumberFromString, PhoneNumber } from 'libphonenumber-js';
 
-
 import { IFsPhoneConfig } from '../../interfaces/phone-config.interface';
 import { IFsPhoneValue } from '../../interfaces/phone-value.interface';
-import { PHONE_CONFIG } from '../../providers';
+import { FS_PHONE_CONFIG } from '../../providers';
 import { PhoneMetadataService } from '../../services/phone-metadata.service';
 import { PhoneService } from '../../services/phone.service';
 
@@ -136,7 +136,7 @@ export class FsPhoneFieldComponent implements OnInit, OnDestroy, ControlValueAcc
     @Self()
     public ngControl: NgControl,
     @Optional()
-    @Inject(PHONE_CONFIG)
+    @Inject(FS_PHONE_CONFIG)
     private readonly _phoneConfig: IFsPhoneConfig,
     private _fb: UntypedFormBuilder,
     private _fm: FocusMonitor,
@@ -409,7 +409,7 @@ export class FsPhoneFieldComponent implements OnInit, OnDestroy, ControlValueAcc
   public setDescribedByIds(ids: string[]) { }
 
   public writeValue(value: IFsPhoneValue | string) {
-   this._writeValue$.next(value);
+    this._writeValue$.next(value);
   }
 
   public registerOnChange(onChange: (value: IFsPhoneValue) => void): void {

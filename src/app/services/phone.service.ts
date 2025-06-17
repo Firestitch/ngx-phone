@@ -19,7 +19,9 @@ import { PhoneMetadataService } from './phone-metadata.service';
 })
 export class PhoneService {
 
-  constructor(private _metadataService: PhoneMetadataService) {
+  constructor(
+    private _metadataService: PhoneMetadataService,
+  ) {
   }
 
   public get metadata(): MetadataJson {
