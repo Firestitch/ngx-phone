@@ -1,15 +1,16 @@
 import { Injectable } from '@angular/core';
 
+import { AsYouType, parsePhoneNumber } from 'libphonenumber-js';
 import {
   CountryCode,
   formatIncompletePhoneNumber,
   getExtPrefix,
-  PhoneNumber,
   MetadataJson,
+  PhoneNumber,
 } from 'libphonenumber-js/core';
-import { AsYouType, parsePhoneNumber } from 'libphonenumber-js';
 
 import { IFsPhoneValue } from '../interfaces/phone-value.interface';
+
 import { PhoneMetadataService } from './phone-metadata.service';
 
 
@@ -25,7 +26,11 @@ export class PhoneService {
     return this._metadataService.metadata;
   }
 
-  public formatIncompletePhoneNumber(countryCode: string, value: string, country: CountryCode): string {
+  public formatIncompletePhoneNumber(
+    countryCode: string,
+    value: string, 
+    country: CountryCode,
+  ): string {
     const typed = new AsYouType(country);
     typed.input(countryCode + value);
 
@@ -33,10 +38,12 @@ export class PhoneService {
       ?.formatInternational()
       .replace(countryCode, '');
 
-    if (!result) { return ''; }
+    if (!result) {
+      return ''; 
+    }
 
     // Double format to fix TA-T1894
-    result = formatIncompletePhoneNumber(result, country, this.metadata)
+    result = formatIncompletePhoneNumber(result, country, this.metadata);
 
     return result;
   }
@@ -45,11 +52,11 @@ export class PhoneService {
     let phoneNumber: PhoneNumber;
 
     try {
-       phoneNumber = !!countryCode
-         ? parsePhoneNumber(value, countryCode)
-         : parsePhoneNumber(value);
+      phoneNumber = countryCode
+        ? parsePhoneNumber(value, countryCode)
+        : parsePhoneNumber(value);
     } catch (e) {
-      throw new Error('Can not parse passed phone number. ' + e)
+      throw new Error(`Can not parse passed phone number. ${  e}`);
     }
 
     if (!phoneNumber.country) {
@@ -61,11 +68,11 @@ export class PhoneService {
 
   public phoneNumberToPhoneValueObject(n: PhoneNumber) {
     return {
-      code: '+' + n.countryCallingCode,
+      code: `+${  n.countryCallingCode}`,
       countryCode: n.country,
-      number: this.formatIncompletePhoneNumber('+' + n.countryCallingCode, n.nationalNumber as string, n.country),
+      number: this.formatIncompletePhoneNumber(`+${  n.countryCallingCode}`, n.nationalNumber as string, n.country),
       ext: n.ext as string,
-    }
+    };
   }
 
   public isPhoneNumberValid(value: IFsPhoneValue | string): boolean {

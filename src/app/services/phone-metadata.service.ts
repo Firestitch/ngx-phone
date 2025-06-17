@@ -1,12 +1,12 @@
 import { Inject, Injectable, Optional } from '@angular/core';
 
-import { BehaviorSubject, Observable } from 'rxjs';
-import { fromFetch } from 'rxjs/fetch';
-import { switchMap } from 'rxjs/operators';
-
 import { delayedRetry } from '@firestitch/common';
 
+import { BehaviorSubject, Observable } from 'rxjs';
+import { switchMap } from 'rxjs/operators';
+
 import { MetadataJson } from 'libphonenumber-js';
+import { fromFetch } from 'rxjs/fetch';
 
 import { IFsPhoneConfig } from '../interfaces/phone-config.interface';
 import { PHONE_CONFIG } from '../providers';
@@ -45,19 +45,19 @@ export class PhoneMetadataService {
   }
 
   private _loadMetadata(): void {
-    fromFetch(this._phoneConfig?.metadataPath || DEFAULT_LOAD_PATH)
+    fromFetch(this._phoneConfig?.metaDataPath || DEFAULT_LOAD_PATH)
       .pipe(
         switchMap((response) => response.json()),
-        delayedRetry(2000, 3)
+        delayedRetry(2000, 3),
       )
       .subscribe({
         next: (data: MetadataJson) => {
           this._metadata.next(data);
-          this._ready$.next(true)
+          this._ready$.next(true);
         },
         error: (e) => {
-          throw new Error('Phones metadata can not be loaded. ' + e);
-        }
+          throw new Error(`Phones metadata can not be loaded. ${  e}`);
+        },
       });
   }
 
