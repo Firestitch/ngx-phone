@@ -1,9 +1,9 @@
-<div 
-    class="phone-group" 
+<div
+    class="phone-group"
     role="group"
     [class.disabled]="disabled"
     [class.with-emoji]="emojiSupported"
-    (focusin)="onFocusIn($event)"
+    (focusin)="onFocusIn()"
     (focusout)="onFocusOut($event)">
   <mat-select
       class="phone-code"
@@ -19,13 +19,15 @@
         [showCode]="false">
       </fs-country-phone-code>
     </mat-select-trigger>
-
     <ng-container *ngFor="let country of countries$ | async">
       <mat-option
           *ngIf="!!country.countryCode"
-          [value]="country.isoCode">
-          {{ country.name }}
-        <span class="fs-phone-country-code">&nbsp;+{{ country.countryCode }}&nbsp;</span>
+          [value]="country.isoCode"
+          [attr.data-name]="country.name">
+        {{ country.name }}
+        <span class="fs-phone-country-code">
+          &nbsp;+{{ country.countryCode }}&nbsp;
+        </span>
         <fs-country-flag
           class="fs-phone-country-flag"
           [code]="country.isoCode">
@@ -33,14 +35,19 @@
       </mat-option>
     </ng-container>
   </mat-select>
-
   <ng-container [formGroup]="phoneNumberParts">
-    <span class="code" [class.disabled]="disabled">{{codeValue}}</span>
+    <span
+        class="code"
+        [class.disabled]="disabled">
+      {{ codeValue }}
+    </span>
     <span>
       <ng-template [cdkPortalOutlet]="selectedPortal"></ng-template>
     </span>
     <ng-container *ngIf="allowNumberExt && extPrefix">
-      <span class="ext-text">{{ extPrefix }}</span>
+      <span class="ext-text">
+        {{ extPrefix }}
+      </span>
       <input
         #extNumberInput
         (keyup)="extKeyup($event)"
@@ -52,4 +59,3 @@
     </ng-container>
   </ng-container>
 </div>
-

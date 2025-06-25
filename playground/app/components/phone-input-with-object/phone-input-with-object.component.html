@@ -1,27 +1,38 @@
-<form fsForm [submit]="save">
+<form
+    fsForm
+    [submit]="save">
   <mat-form-field>
-    <mat-label>Phone number</mat-label>
-    <input 
+    <mat-label>
+      Phone number
+    </mat-label>
+    <input
       matInput
       fsPhoneField
       [fsAutofocus]="true"
       [required]="true"
       [(ngModel)]="model"
       name="test">
-    <mat-hint>enter your phone number</mat-hint>
+    <mat-hint>
+      enter your phone number
+    </mat-hint>
   </mat-form-field>
-
   <div class="actions">
-    <button mat-raised-button color="primary">Submit</button>
+    <button
+        mat-raised-button
+        color="primary">
+      Submit
+    </button>
   </div>
 </form>
-
 <fieldset class="input-fieldset">
-  <legend>Model Value</legend>
+  <legend>
+    Model Value
+  </legend>
   {{ model | json }}
 </fieldset>
-
 <fieldset class="input-fieldset">
-  <legend>Output Value</legend>
+  <legend>
+    Output Value
+  </legend>
   {{ model | fsPhone }}
 </fieldset>

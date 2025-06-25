@@ -27,11 +27,14 @@ import { coerceBooleanProperty } from '@angular/cdk/coercion';
 import { DomPortal, Portal } from '@angular/cdk/portal';
 import { MatFormField, MatFormFieldControl } from '@angular/material/form-field';
 import { MatInput } from '@angular/material/input';
+import { MatSelect } from '@angular/material/select';
 
 import { FsCountry, IFsCountry } from '@firestitch/country';
 
 import { combineLatest, fromEvent, merge, Observable, ReplaySubject, Subject, timer } from 'rxjs';
 import {
+  buffer,
+  debounceTime,
   distinctUntilChanged,
   filter,
   map,
@@ -42,7 +45,6 @@ import {
   takeUntil,
   tap,
 } from 'rxjs/operators';
-
 
 import { AsYouType, CountryCode, parsePhoneNumberFromString, PhoneNumber } from 'libphonenumber-js';
 
@@ -67,6 +69,9 @@ export class FsPhoneFieldComponent implements OnInit, OnDestroy, ControlValueAcc
 
   public static nextId = 0;
 
+  @ViewChild(MatSelect)
+  public countrySelect: MatSelect;
+
   @Input()
   @HostBinding('class.with-number-extention')
   public allowNumberExt = false;
@@ -77,10 +82,18 @@ export class FsPhoneFieldComponent implements OnInit, OnDestroy, ControlValueAcc
     this.stateChanges.next(null);
   }
 
+  public get placeholder(): string {
+    return this._placeholder;
+  }
+
   @Input()
   public set required(value: boolean) {
     this._required = coerceBooleanProperty(value);
     this.stateChanges.next(null);
+  }
+
+  public get required(): boolean {
+    return this._required;
   }
 
   @Input()
@@ -95,6 +108,10 @@ export class FsPhoneFieldComponent implements OnInit, OnDestroy, ControlValueAcc
     this.stateChanges.next(null);
   }
 
+  public get disabled(): boolean {
+    return this._disabled;
+  }
+
   @Input()
   public mode: 'string' | 'object' = 'string';
 
@@ -107,11 +124,12 @@ export class FsPhoneFieldComponent implements OnInit, OnDestroy, ControlValueAcc
   @HostBinding()
   public id = `example-tel-input-${FsPhoneFieldComponent.nextId++}`;
 
+  // eslint-disable-next-line rxjs/no-exposed-subjects
+  public stateChanges = new Subject<void>();
   public phoneNumberParts: UntypedFormGroup;
   public focused = false;
   public touched = false;
   public controlType = 'phone-input';
-  public stateChanges = new Subject<void>();
   public extPrefix = '';
   public countryControl = new UntypedFormControl('');
   public ready$: Observable<boolean>;
@@ -130,6 +148,7 @@ export class FsPhoneFieldComponent implements OnInit, OnDestroy, ControlValueAcc
   private _destroy$ = new Subject<void>();
   private _onTouched: () => void;
   private _onChange: (value: IFsPhoneValue | string) => void;
+  private _phoneKeydown$ = new Subject<KeyboardEvent>();
 
   constructor(
     @Optional()
@@ -148,6 +167,7 @@ export class FsPhoneFieldComponent implements OnInit, OnDestroy, ControlValueAcc
     private _matInput: MatInput,
   ) {
     this._initControls();
+    this._listenPhoneKeydown();
     this._registerValueAccessor();
     this._listenContainerClick();
     this._initResourcesReadyState();
@@ -159,7 +179,7 @@ export class FsPhoneFieldComponent implements OnInit, OnDestroy, ControlValueAcc
     const el = this._el;
 
     el.nativeElement.childNodes.forEach((c) => {
-      el.nativeElement.offsetParent.append(c);
+      el.nativeElement.parentElement.append(c);
     });
 
     this.selectedPortal = portal;
@@ -215,18 +235,6 @@ export class FsPhoneFieldComponent implements OnInit, OnDestroy, ControlValueAcc
 
     return value;
 
-  }
-
-  public get placeholder(): string {
-    return this._placeholder;
-  }
-
-  public get required(): boolean {
-    return this._required;
-  }
-
-  public get disabled(): boolean {
-    return this._disabled;
   }
 
   @HostBinding('class.floating')
@@ -297,6 +305,8 @@ export class FsPhoneFieldComponent implements OnInit, OnDestroy, ControlValueAcc
   }
 
   public phoneKeydown(event: KeyboardEvent): void {
+    this._phoneKeydown$.next(event);
+
     if (
       this.allowNumberExt &&
       event.code === 'ArrowRight' &&
@@ -309,7 +319,7 @@ export class FsPhoneFieldComponent implements OnInit, OnDestroy, ControlValueAcc
   }
 
   public phoneKeypress(event: KeyboardEvent): void {
-    const regEx = new RegExp(/[^\d\)\(\s\-)]/, 'g');
+    const regEx = new RegExp(/[^\d)(\s\-)]/, 'g');
     if (event.key && event.key.match(regEx)) {
       event.preventDefault();
     }
@@ -357,7 +367,9 @@ export class FsPhoneFieldComponent implements OnInit, OnDestroy, ControlValueAcc
       ) {
         this.selectExtNumber();
       }
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (error) {
+      //
     }
   }
 
@@ -406,7 +418,9 @@ export class FsPhoneFieldComponent implements OnInit, OnDestroy, ControlValueAcc
     this._countrySelectOpened$.next(null);
   }
 
-  public setDescribedByIds(ids: string[]) { }
+  public setDescribedByIds() { 
+    //
+  }
 
   public writeValue(value: IFsPhoneValue | string) {
     this._writeValue$.next(value);
@@ -420,7 +434,7 @@ export class FsPhoneFieldComponent implements OnInit, OnDestroy, ControlValueAcc
     this._onTouched = onTouched;
   }
 
-  public validate({ value }: UntypedFormControl) {
+  public validate() {
     const validationErrors: ValidationErrors = {};
     let isNotValid = false;
 
@@ -443,7 +457,7 @@ export class FsPhoneFieldComponent implements OnInit, OnDestroy, ControlValueAcc
     return isNotValid && validationErrors;
   }
 
-  public onFocusIn(event: FocusEvent) {
+  public onFocusIn() {
     if (!this.focused) {
       this.focused = true;
       this.stateChanges.next(null);
@@ -503,6 +517,24 @@ export class FsPhoneFieldComponent implements OnInit, OnDestroy, ControlValueAcc
 
   private _initDefaultCountry(): void {
     this.country = this.country || this._phoneConfig?.isoCountryCode;
+  }
+
+  private _listenPhoneKeydown(): void {
+    this._phoneKeydown$
+      .pipe(
+        filter((event) => event.key.match(/[a-z]/i) && this.countrySelect?.panelOpen),
+        map((ev) => ev.key.toLowerCase()),                          
+        buffer(this._phoneKeydown$.pipe(debounceTime(200))),
+        map((chars) => chars.join('')),                            
+        filter(Boolean), 
+        takeUntil(this._destroy$),
+      )
+      .subscribe((chars) => {
+        const el = this.countrySelect.panel.nativeElement
+          .querySelector(`mat-option[data-name^="${chars}" i]`);
+
+        el?.scrollIntoView();
+      });
   }
 
   private _initControls(): void {
@@ -649,13 +681,17 @@ export class FsPhoneFieldComponent implements OnInit, OnDestroy, ControlValueAcc
 
       try {
         phoneNumber = this._phone.parsePhoneNumber(value, this.country);
-      } catch (e) { }
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      } catch (e) { 
+        //
+      }
     } else if (value && typeof value === 'object') {
       if (value.isoCode) {
-        this.country = value.isoCode as any;
+        this.country = value.isoCode as CountryCode;
       }
 
-      phoneNumber = this._phone.parsePhoneNumber(`+${value.countryCode}${value.number.toString()}`, this.country);
+      phoneNumber = this._phone
+        .parsePhoneNumber(`+${value.countryCode}${value.number.toString()}`, this.country);
 
       if (phoneNumber) {
         phoneNumber.ext = value.ext;
