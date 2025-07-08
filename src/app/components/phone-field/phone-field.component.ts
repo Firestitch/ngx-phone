@@ -206,6 +206,14 @@ export class FsPhoneFieldComponent implements OnInit, OnDestroy, ControlValueAcc
   }
 
   public get value(): IFsPhoneValue | string {
+    if(
+      this._matInput.value === undefined ||
+      this._matInput.value === null ||
+      (this._matInput.value).trim() === ''
+    ) {
+      return null;
+    }
+
     let value = {
       ...this.phoneNumberParts.value,
       number: this._matInput.value,
