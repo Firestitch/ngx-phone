@@ -41,21 +41,23 @@
         [class.disabled]="disabled">
       {{ codeValue }}
     </span>
-    <span>
+    <span class="phone-input">
       <ng-template [cdkPortalOutlet]="selectedPortal"></ng-template>
     </span>
     <ng-container *ngIf="allowNumberExt && extPrefix">
-      <span class="ext-text">
-        {{ extPrefix }}
+      <span class="ext">
+        <span class="ext-text">
+          {{ extPrefix }}
+        </span>
+        <input
+          #extNumberInput
+          (keyup)="extKeyup($event)"
+          (keydown)="extKeydown($event)"
+          class="ext-number"
+          matInput
+          placeholder="ext"
+          formControlName="ext">
       </span>
-      <input
-        #extNumberInput
-        (keyup)="extKeyup($event)"
-        (keydown)="extKeydown($event)"
-        class="ext-number"
-        matInput
-        placeholder="xxx"
-        formControlName="ext">
     </ng-container>
   </ng-container>
 </div>
