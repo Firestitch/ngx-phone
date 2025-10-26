@@ -1,16 +1,4 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  ElementRef,
-  HostBinding,
-  Inject,
-  Input,
-  OnDestroy,
-  OnInit,
-  Optional,
-  Self,
-  ViewChild,
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, ElementRef, HostBinding, Input, OnDestroy, OnInit, ViewChild, inject } from '@angular/core';
 import { ControlValueAccessor, NgControl, UntypedFormBuilder, UntypedFormControl, UntypedFormGroup, ValidationErrors, Validator, FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { FocusMonitor } from '@angular/cdk/a11y';
@@ -71,6 +59,15 @@ import { AsyncPipe } from '@angular/common';
 })
 export class FsPhoneFieldDeprecatedComponent implements OnInit, OnDestroy, ControlValueAccessor,
   MatFormFieldControl<IFsPhoneValue | string>, Validator {
+  ngControl = inject(NgControl, { optional: true, self: true });
+  private _fb = inject(UntypedFormBuilder);
+  private _fm = inject(FocusMonitor);
+  private _el = inject(ElementRef);
+  private _phone = inject(PhoneService);
+  private _countriesStore = inject(FsCountry);
+  private _metadata = inject(PhoneMetadataService);
+  private readonly _phoneConfig = inject<IFsPhoneConfig>(FS_PHONE_CONFIG, { optional: true });
+
 
   public static nextId = 0;
 
@@ -148,20 +145,7 @@ export class FsPhoneFieldDeprecatedComponent implements OnInit, OnDestroy, Contr
   private _onTouched = () => { };
   private _onChange: (value: IFsPhoneValue | string) => void = () => { };
 
-  constructor(
-    @Optional()
-    @Self()
-    public ngControl: NgControl,
-    private _fb: UntypedFormBuilder,
-    private _fm: FocusMonitor,
-    private _el: ElementRef,
-    private _phone: PhoneService,
-    private _countriesStore: FsCountry,
-    private _metadata: PhoneMetadataService,
-    @Optional()
-    @Inject(FS_PHONE_CONFIG)
-    private readonly _phoneConfig: IFsPhoneConfig,
-  ) {
+  constructor() {
     this._initControls();
     this._registerValueAccessor();
     this._listenContainerClick();

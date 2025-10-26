@@ -1,10 +1,4 @@
-import {
-  Directive,
-  ElementRef,
-  HostListener,
-  OnInit,
-  forwardRef,
-} from '@angular/core';
+import { Directive, ElementRef, HostListener, OnInit, forwardRef, inject } from '@angular/core';
 import { NG_VALUE_ACCESSOR } from '@angular/forms';
 
 import IMask from 'imask';
@@ -21,13 +15,13 @@ import { toString } from 'lodash-es';
     standalone: true,
 })
 export class FsPhoneDirective implements OnInit {
+  private _elementRef = inject(ElementRef);
+
 
   private _imask;
 
   private _onTouched: () => void;
   private _onChange: (value: any) => void;
-
-  constructor(private _elementRef: ElementRef) { }
 
   @HostListener('focus')
   public onfocus() {

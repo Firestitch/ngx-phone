@@ -1,4 +1,4 @@
-import { Inject, Injectable, Optional } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 
 import { delayedRetry } from '@firestitch/common';
 
@@ -16,14 +16,13 @@ import { FS_PHONE_CONFIG } from '../providers';
   providedIn: 'root',
 })
 export class PhoneMetadataService {
+  private readonly _phoneConfig = inject<IFsPhoneConfig>(FS_PHONE_CONFIG, { optional: true });
+
 
   private _metadata = new BehaviorSubject<MetadataJson>(null);
   private _ready$ = new BehaviorSubject<boolean>(false);
 
-  constructor(
-    @Optional() @Inject(FS_PHONE_CONFIG) 
-    private readonly _phoneConfig: IFsPhoneConfig,
-  ) {
+  constructor() {
     this._loadMetadata();
   }
 

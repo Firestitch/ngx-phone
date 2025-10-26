@@ -1,17 +1,4 @@
-import {
-  AfterContentInit,
-  ChangeDetectionStrategy,
-  Component,
-  ElementRef,
-  HostBinding,
-  Inject,
-  Input,
-  OnDestroy,
-  OnInit,
-  Optional,
-  Self,
-  ViewChild,
-} from '@angular/core';
+import { AfterContentInit, ChangeDetectionStrategy, Component, ElementRef, HostBinding, Input, OnDestroy, OnInit, ViewChild, inject } from '@angular/core';
 import { ControlValueAccessor, NgControl, UntypedFormBuilder, UntypedFormControl, UntypedFormGroup, ValidationErrors, Validator, FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { FocusMonitor } from '@angular/cdk/a11y';
@@ -72,6 +59,17 @@ import { AsyncPipe } from '@angular/common';
 })
 export class FsPhoneFieldComponent implements OnInit, OnDestroy, ControlValueAccessor,
   MatFormFieldControl<IFsPhoneValue | string>, Validator, AfterContentInit {
+  ngControl = inject(NgControl, { optional: true, self: true });
+  private readonly _phoneConfig = inject<IFsPhoneConfig>(FS_PHONE_CONFIG, { optional: true });
+  private _fb = inject(UntypedFormBuilder);
+  private _fm = inject(FocusMonitor);
+  private _el = inject(ElementRef);
+  private _phone = inject(PhoneService);
+  private _countriesStore = inject(FsCountry);
+  private _metadata = inject(PhoneMetadataService);
+  private _formField = inject(MatFormField);
+  private _matInput = inject(MatInput);
+
 
   public static nextId = 0;
 
@@ -156,22 +154,7 @@ export class FsPhoneFieldComponent implements OnInit, OnDestroy, ControlValueAcc
   private _onChange: (value: IFsPhoneValue | string) => void;
   private _phoneKeydown$ = new Subject<KeyboardEvent>();
 
-  constructor(
-    @Optional()
-    @Self()
-    public ngControl: NgControl,
-    @Optional()
-    @Inject(FS_PHONE_CONFIG)
-    private readonly _phoneConfig: IFsPhoneConfig,
-    private _fb: UntypedFormBuilder,
-    private _fm: FocusMonitor,
-    private _el: ElementRef,
-    private _phone: PhoneService,
-    private _countriesStore: FsCountry,
-    private _metadata: PhoneMetadataService,
-    private _formField: MatFormField,
-    private _matInput: MatInput,
-  ) {
+  constructor() {
     this._initControls();
     this._listenPhoneKeydown();
     this._registerValueAccessor();

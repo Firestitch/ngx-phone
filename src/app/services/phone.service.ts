@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 
 import { AsYouType, parsePhoneNumber } from 'libphonenumber-js';
 import {
@@ -18,11 +18,8 @@ import { PhoneMetadataService } from './phone-metadata.service';
   providedIn: 'root',
 })
 export class PhoneService {
+  private _metadataService = inject(PhoneMetadataService);
 
-  constructor(
-    private _metadataService: PhoneMetadataService,
-  ) {
-  }
 
   public get metadata(): MetadataJson {
     return this._metadataService.metadata;
