@@ -1,50 +1,51 @@
 <div
-    class="phone-group"
-    role="group"
-    [class.disabled]="disabled"
-    [class.with-emoji]="emojiSupported"
-    (focusin)="onFocusIn()"
-    (focusout)="onFocusOut($event)">
+  class="phone-group"
+  role="group"
+  [class.disabled]="disabled"
+  [class.with-emoji]="emojiSupported"
+  (focusin)="onFocusIn()"
+  (focusout)="onFocusOut($event)">
   <mat-select
-      class="phone-code"
-      (opened)="countrySelectOpened()"
-      (selectionChange)="countrySelectionChange()"
-      [formControl]="countryControl"
-      tabindex="-1"
-      panelClass="fs-phone-country-pane"
-      #countryInput>
+    class="phone-code"
+    (opened)="countrySelectOpened()"
+    (selectionChange)="countrySelectionChange()"
+    [formControl]="countryControl"
+    tabindex="-1"
+    panelClass="fs-phone-country-pane"
+    #countryInput>
     <mat-select-trigger>
       <fs-country-phone-code
         [code]="countryControl.value"
         [showCode]="false">
       </fs-country-phone-code>
     </mat-select-trigger>
-    <ng-container *ngFor="let country of countries$ | async">
-      <mat-option
-          *ngIf="!!country.countryCode"
+    @for (country of countries$ | async; track country) {
+      @if (!!country.countryCode) {
+        <mat-option
           [value]="country.isoCode"
           [attr.data-name]="country.name">
-        {{ country.name }}
-        <span class="fs-phone-country-code">
-          &nbsp;+{{ country.countryCode }}&nbsp;
-        </span>
-        <fs-country-flag
-          class="fs-phone-country-flag"
-          [code]="country.isoCode">
-        </fs-country-flag>
-      </mat-option>
-    </ng-container>
+          {{ country.name }}
+          <span class="fs-phone-country-code">
+            &nbsp;+{{ country.countryCode }}&nbsp;
+          </span>
+          <fs-country-flag
+            class="fs-phone-country-flag"
+            [code]="country.isoCode">
+          </fs-country-flag>
+        </mat-option>
+      }
+    }
   </mat-select>
   <ng-container [formGroup]="phoneNumberParts">
     <span
-        class="code"
-        [class.disabled]="disabled">
+      class="code"
+      [class.disabled]="disabled">
       {{ codeValue }}
     </span>
     <span class="phone-input">
       <ng-template [cdkPortalOutlet]="selectedPortal"></ng-template>
     </span>
-    <ng-container *ngIf="allowNumberExt && extPrefix">
+    @if (allowNumberExt && extPrefix) {
       <span class="ext">
         <span class="ext-text">
           {{ extPrefix }}
@@ -58,6 +59,6 @@
           placeholder="ext"
           formControlName="ext">
       </span>
-    </ng-container>
+    }
   </ng-container>
 </div>

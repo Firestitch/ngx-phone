@@ -1,16 +1,16 @@
 <ng-container *fsSkeleton="ready$ | async; pattern: [100]">
   <div class="phone-group" role="group"
-       [class.with-emoji]="emojiSupported"
-       (focusin)="onFocusIn($event)"
-       (focusout)="onFocusOut($event)">
+    [class.with-emoji]="emojiSupported"
+    (focusin)="onFocusIn($event)"
+    (focusout)="onFocusOut($event)">
     <mat-select
-        class="phone-code"
-        (opened)="countrySelectOpened()"
-        (selectionChange)="countrySelectionChange()"
-        [formControl]="countryControl"
-        tabindex="-1"
-        panelClass="fs-phone-country-pane"
-        #countryInput>
+      class="phone-code"
+      (opened)="countrySelectOpened()"
+      (selectionChange)="countrySelectionChange()"
+      [formControl]="countryControl"
+      tabindex="-1"
+      panelClass="fs-phone-country-pane"
+      #countryInput>
       <mat-select-trigger>
         <fs-country-phone-code
           [code]="countryControl.value"
@@ -18,18 +18,19 @@
         </fs-country-phone-code>
       </mat-select-trigger>
 
-      <ng-container *ngFor="let country of countries$ | async">
-        <mat-option
-            *ngIf="!!country.countryCode"
+      @for (country of countries$ | async; track country) {
+        @if (!!country.countryCode) {
+          <mat-option
             [value]="country.isoCode">
-          {{ country.name }}
-          <span class="fs-phone-country-code">&nbsp;+{{ country.countryCode }}&nbsp;</span>
-          <fs-country-flag
-            class="fs-phone-country-flag"
-            [code]="country.isoCode">
-          </fs-country-flag>
-        </mat-option>
-      </ng-container>
+            {{ country.name }}
+            <span class="fs-phone-country-code">&nbsp;+{{ country.countryCode }}&nbsp;</span>
+            <fs-country-flag
+              class="fs-phone-country-flag"
+              [code]="country.isoCode">
+            </fs-country-flag>
+          </mat-option>
+        }
+      }
     </mat-select>
 
     <ng-container [formGroup]="phoneNumberParts">
@@ -48,7 +49,7 @@
         (blur)="phoneFormat()"
         #phoneNumberInput>
 
-      <ng-container *ngIf="allowNumberExt && extPrefix">
+      @if (allowNumberExt && extPrefix) {
         <span class="ext-text">{{ extPrefix }}</span>
         <input
           #extNumberInput
@@ -59,7 +60,7 @@
           placeholder="xxx"
           formControlName="ext"
           [name]="name + '-ext'">
-      </ng-container>
+      }
     </ng-container>
   </div>
 </ng-container>

@@ -1,4 +1,5 @@
-<fs-country-flag 
-  *ngIf="phoneIsObject"
-  [code]="phoneISOCode">
-</fs-country-flag> {{ formattedPhone }}
+@if (phoneIsObject) {
+  <fs-country-flag
+    [code]="phoneISOCode">
+  </fs-country-flag>
+  } {{ formattedPhone }}
