@@ -21,34 +21,29 @@ import { FS_PHONE_CONFIG } from './providers/fs-phone-config';
 
 
 @NgModule({
-  imports: [
-    FormsModule,
-    CommonModule,
-
-    MatSelectModule,
-    MatInputModule,
-    MatFormFieldModule,
-
-    FsSkeletonModule,
-    FsCountryModule,
-
-    ReactiveFormsModule,
-    PortalModule,
-  ],
-  exports: [
-    FsPhoneComponent,
-    FsPhoneFieldDeprecatedComponent,
-    FsPhoneFieldComponent,
-    FsPhoneDirective,
-    FsPhonePipe,
-  ],
-  declarations: [
-    FsPhoneComponent,
-    FsPhoneFieldDeprecatedComponent,
-    FsPhoneFieldComponent,
-    FsPhoneDirective,
-    FsPhonePipe,
-  ],
+    imports: [
+        FormsModule,
+        CommonModule,
+        MatSelectModule,
+        MatInputModule,
+        MatFormFieldModule,
+        FsSkeletonModule,
+        FsCountryModule,
+        ReactiveFormsModule,
+        PortalModule,
+        FsPhoneComponent,
+        FsPhoneFieldDeprecatedComponent,
+        FsPhoneFieldComponent,
+        FsPhoneDirective,
+        FsPhonePipe,
+    ],
+    exports: [
+        FsPhoneComponent,
+        FsPhoneFieldDeprecatedComponent,
+        FsPhoneFieldComponent,
+        FsPhoneDirective,
+        FsPhonePipe,
+    ],
 })
 export class FsPhoneModule {
   public static forRoot(config: IFsPhoneConfig = {}): ModuleWithProviders<FsPhoneModule> {

@@ -4,7 +4,8 @@ import { formatPhoneNumber } from '../helpers/format-phone-number';
 
 
 @Pipe({
-  name: 'fsPhone',
+    name: 'fsPhone',
+    standalone: true,
 })
 export class FsPhonePipe implements PipeTransform {
 

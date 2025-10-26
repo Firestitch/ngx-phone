@@ -1,10 +1,13 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { FsPhonePipe } from '../../../../src/app/pipes/phone-format.pipe';
 
 @Component({
-  selector: 'phone-display',
-  templateUrl: './phone-display.component.html',
-  styleUrls: ['./phone-display.component.css'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
+    selector: 'phone-display',
+    templateUrl: './phone-display.component.html',
+    styleUrls: ['./phone-display.component.css'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: true,
+    imports: [FsPhonePipe],
 })
 export class PhoneDisplayComponent {
   

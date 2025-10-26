@@ -12,24 +12,16 @@ import {
   Self,
   ViewChild,
 } from '@angular/core';
-import {
-  ControlValueAccessor,
-  NgControl,
-  UntypedFormBuilder,
-  UntypedFormControl,
-  UntypedFormGroup,
-  ValidationErrors,
-  Validator,
-} from '@angular/forms';
+import { ControlValueAccessor, NgControl, UntypedFormBuilder, UntypedFormControl, UntypedFormGroup, ValidationErrors, Validator, FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { FocusMonitor } from '@angular/cdk/a11y';
 import { coerceBooleanProperty } from '@angular/cdk/coercion';
-import { DomPortal, Portal } from '@angular/cdk/portal';
+import { DomPortal, Portal, CdkPortalOutlet } from '@angular/cdk/portal';
 import { MatFormField, MatFormFieldControl } from '@angular/material/form-field';
 import { MatInput } from '@angular/material/input';
-import { MatSelect } from '@angular/material/select';
+import { MatSelect, MatSelectTrigger } from '@angular/material/select';
 
-import { FsCountry, IFsCountry } from '@firestitch/country';
+import { FsCountry, IFsCountry, FsCountryModule } from '@firestitch/country';
 
 import { combineLatest, fromEvent, merge, Observable, ReplaySubject, Subject, timer } from 'rxjs';
 import {
@@ -53,16 +45,30 @@ import { IFsPhoneValue } from '../../interfaces/phone-value.interface';
 import { FS_PHONE_CONFIG } from '../../providers';
 import { PhoneMetadataService } from '../../services/phone-metadata.service';
 import { PhoneService } from '../../services/phone.service';
+import { MatOption } from '@angular/material/core';
+import { AsyncPipe } from '@angular/common';
 
 
 @Component({
-  selector: '[fsPhoneField]',
-  templateUrl: './phone-field.component.html',
-  styleUrls: ['./phone-field.component.scss'],
-  providers: [
-    { provide: MatFormFieldControl, useExisting: FsPhoneFieldComponent },
-  ],
-  changeDetection: ChangeDetectionStrategy.OnPush,
+    selector: '[fsPhoneField]',
+    templateUrl: './phone-field.component.html',
+    styleUrls: ['./phone-field.component.scss'],
+    providers: [
+        { provide: MatFormFieldControl, useExisting: FsPhoneFieldComponent },
+    ],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: true,
+    imports: [
+        MatSelect,
+        FormsModule,
+        ReactiveFormsModule,
+        MatSelectTrigger,
+        FsCountryModule,
+        MatOption,
+        CdkPortalOutlet,
+        MatInput,
+        AsyncPipe,
+    ],
 })
 export class FsPhoneFieldComponent implements OnInit, OnDestroy, ControlValueAccessor,
   MatFormFieldControl<IFsPhoneValue | string>, Validator, AfterContentInit {

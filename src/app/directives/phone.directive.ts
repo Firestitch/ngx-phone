@@ -12,12 +12,13 @@ import { toString } from 'lodash-es';
 
 
 @Directive({
-  selector: '[fsPhone]',
-  providers: [{
-    provide: NG_VALUE_ACCESSOR,
-    useExisting: forwardRef(() => FsPhoneDirective),
-    multi: true,
-  }],
+    selector: '[fsPhone]',
+    providers: [{
+            provide: NG_VALUE_ACCESSOR,
+            useExisting: forwardRef(() => FsPhoneDirective),
+            multi: true,
+        }],
+    standalone: true,
 })
 export class FsPhoneDirective implements OnInit {
 

@@ -2,11 +2,14 @@ import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
 
 import { formatPhoneNumber } from '../../helpers/format-phone-number';
 import { IFsPhoneValue } from '../../interfaces/phone-value.interface';
+import { FsCountryModule } from '@firestitch/country';
 
 
 @Component({
-  selector: 'fs-phone',
-  templateUrl: './phone.component.html',
+    selector: 'fs-phone',
+    templateUrl: './phone.component.html',
+    standalone: true,
+    imports: [FsCountryModule],
 })
 export class FsPhoneComponent implements OnChanges {
 

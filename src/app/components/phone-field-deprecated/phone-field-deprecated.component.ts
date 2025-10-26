@@ -11,22 +11,14 @@ import {
   Self,
   ViewChild,
 } from '@angular/core';
-import {
-  ControlValueAccessor,
-  NgControl,
-  UntypedFormBuilder,
-  UntypedFormControl,
-  UntypedFormGroup,
-  ValidationErrors,
-  Validator,
-} from '@angular/forms';
+import { ControlValueAccessor, NgControl, UntypedFormBuilder, UntypedFormControl, UntypedFormGroup, ValidationErrors, Validator, FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { FocusMonitor } from '@angular/cdk/a11y';
 import { coerceBooleanProperty } from '@angular/cdk/coercion';
 import { MatFormFieldControl } from '@angular/material/form-field';
 
 
-import { FsCountry, IFsCountry } from '@firestitch/country';
+import { FsCountry, IFsCountry, FsCountryModule } from '@firestitch/country';
 
 import { combineLatest, merge, Observable, ReplaySubject, Subject, timer } from 'rxjs';
 import {
@@ -49,16 +41,33 @@ import { IFsPhoneValue } from '../../interfaces/phone-value.interface';
 import { FS_PHONE_CONFIG } from '../../providers';
 import { PhoneMetadataService } from '../../services/phone-metadata.service';
 import { PhoneService } from '../../services/phone.service';
+import { FsSkeletonModule } from '@firestitch/skeleton';
+import { MatSelect, MatSelectTrigger } from '@angular/material/select';
+import { MatOption } from '@angular/material/core';
+import { MatInput } from '@angular/material/input';
+import { AsyncPipe } from '@angular/common';
 
 
 @Component({
-  selector: 'fs-phone-field',
-  templateUrl: './phone-field-deprecated.component.html',
-  styleUrls: ['./phone-field-deprecated.component.scss'],
-  providers: [
-    { provide: MatFormFieldControl, useExisting: FsPhoneFieldDeprecatedComponent },
-  ],
-  changeDetection: ChangeDetectionStrategy.OnPush,
+    selector: 'fs-phone-field',
+    templateUrl: './phone-field-deprecated.component.html',
+    styleUrls: ['./phone-field-deprecated.component.scss'],
+    providers: [
+        { provide: MatFormFieldControl, useExisting: FsPhoneFieldDeprecatedComponent },
+    ],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: true,
+    imports: [
+        FsSkeletonModule,
+        MatSelect,
+        FormsModule,
+        ReactiveFormsModule,
+        MatSelectTrigger,
+        FsCountryModule,
+        MatOption,
+        MatInput,
+        AsyncPipe,
+    ],
 })
 export class FsPhoneFieldDeprecatedComponent implements OnInit, OnDestroy, ControlValueAccessor,
   MatFormFieldControl<IFsPhoneValue | string>, Validator {
