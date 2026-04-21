@@ -5,7 +5,6 @@
   <input
     matInput
     fsPhoneField
-    [allowNumberExt]="true"
     [(ngModel)]="model"
     (ngModelChange)="changed($event)"
     name="test">
@@ -15,13 +14,25 @@
 </mat-form-field>
 <fieldset class="input-fieldset">
   <legend>
-    Output Value
+    Model Value (E.164 Format)
   </legend>
-  {{ value|json }}
+  {{ model }}
 </fieldset>
 <fieldset class="input-fieldset">
   <legend>
-    Formatted Value
+    Formatted (Human Readable)
   </legend>
   {{ model | fsPhone }}
+</fieldset>
+<fieldset class="input-fieldset">
+  <legend>
+    Formatted (International E.164 Format)
+  </legend>
+  {{ model | fsPhone:'E164' }}
+</fieldset>
+<fieldset class="input-fieldset">
+  <legend>
+    Formatted (International E.123 Format)
+  </legend>
+  {{ model | fsPhone:'E123' }}
 </fieldset>

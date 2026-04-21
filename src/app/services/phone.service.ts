@@ -3,10 +3,10 @@ import { Injectable, inject } from '@angular/core';
 import { AsYouType, parsePhoneNumber } from 'libphonenumber-js';
 import {
   CountryCode,
-  formatIncompletePhoneNumber,
-  getExtPrefix,
   MetadataJson,
   PhoneNumber,
+  formatIncompletePhoneNumber,
+  getExtPrefix,
 } from 'libphonenumber-js/core';
 
 import { IFsPhoneValue } from '../interfaces/phone-value.interface';
@@ -92,7 +92,8 @@ export class PhoneService {
       }
 
       return phoneNumber.isValid() || phoneNumber.isPossible();
-    } catch (e) {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    } catch (e) { 
       return false;
     }
   }

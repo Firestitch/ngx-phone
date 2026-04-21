@@ -1,6 +1,6 @@
 import { Pipe, PipeTransform } from '@angular/core';
 
-import { formatPhoneNumber } from '../helpers/format-phone-number';
+import { PhoneFormat, formatPhoneNumber } from '../helpers/format-phone-number';
 
 
 @Pipe({
@@ -93,26 +93,16 @@ export class FsPhonePipe implements PipeTransform {
     }
   */
 
-  public transform(value: number | string): string {
+  public transform(value: number | string, format: PhoneFormat = 'national'): string {
     if (!value) {
       return '';
     }
 
-    // if (this._value !== value) {
-    //   this._value = value;
-    //
-    //   if (!this._ready) {
-    //     this._displayValue = this._fallbackParse(value);
-    //   }
-    //
-    //   this._transform$.next(value);
-    // }
-
-    return this._fallbackParse(value);
+    return this._fallbackParse(value, format);
   }
 
-  private _fallbackParse(value: number | string) {
-    const str = formatPhoneNumber(`${value}`);
+  private _fallbackParse(value: number | string, format: PhoneFormat) {
+    const str = formatPhoneNumber(`${value}`, format);
 
     return str;
   }

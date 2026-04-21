@@ -1,36 +1,36 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { MatFormField, MatLabel, MatHint } from '@angular/material/form-field';
-import { MatInput } from '@angular/material/input';
 import { FormsModule } from '@angular/forms';
-import { FsPhoneFieldComponent } from '../../../../src/app/components/phone-field/phone-field.component';
+
+import { MatFormField, MatHint, MatLabel } from '@angular/material/form-field';
+import { MatInput } from '@angular/material/input';
+
 import { FsFormModule } from '@firestitch/form';
-import { JsonPipe } from '@angular/common';
+
+import { FsPhoneFieldComponent } from '../../../../src/app/components/phone-field/phone-field.component';
 import { FsPhonePipe } from '../../../../src/app/pipes/phone-format.pipe';
 
 @Component({
-    selector: 'phone-input-with-string',
-    templateUrl: './phone-input-with-string.component.html',
-    styleUrls: ['./phone-input-with-string.component.css'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    standalone: true,
-    imports: [
-        MatFormField,
-        MatLabel,
-        MatInput,
-        FormsModule,
-        FsPhoneFieldComponent,
-        FsFormModule,
-        MatHint,
-        JsonPipe,
-        FsPhonePipe,
-    ],
+  selector: 'phone-input-with-string',
+  templateUrl: './phone-input-with-string.component.html',
+  styleUrls: ['./phone-input-with-string.component.css'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: true,
+  imports: [
+    MatFormField,
+    MatLabel,
+    MatInput,
+    FormsModule,
+    FsPhoneFieldComponent,
+    FsFormModule,
+    MatHint,
+    FsPhonePipe,
+  ],
 })
 export class PhoneInputWithStringComponent {
 
-  public model = '+1 (416) 373-4253 ext. 1234';
-  public value;
+  public model = '+14163734253';
 
   public changed(value) {
-    this.value = value;
+    this.model = value;
   }
 }

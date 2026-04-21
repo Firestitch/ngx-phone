@@ -80,7 +80,6 @@
   .phone-number {
     width: 110px;
     min-width: 110px;
-    margin-left: 4px;
   }
 
   .ext-text {
@@ -99,4 +98,9 @@
       opacity: 0 !important;
     }
   }
+}
+
+
+.fs-phone-country-flag {
+  margin-right: 4px;
 }

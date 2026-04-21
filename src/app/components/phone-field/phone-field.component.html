@@ -1,18 +1,19 @@
 <div
-  class="phone-group"
-  role="group"
-  [class.disabled]="disabled"
-  [class.with-emoji]="emojiSupported"
-  (focusin)="onFocusIn()"
-  (focusout)="onFocusOut($event)">
+    class="phone-group"
+    role="group"
+    [class.disabled]="disabled"
+    [class.with-emoji]="emojiSupported"
+    (focusin)="onFocusIn()"
+    (focusout)="onFocusOut($event)">
   <mat-select
-    class="phone-code"
-    (opened)="countrySelectOpened()"
-    (selectionChange)="countrySelectionChange()"
-    [formControl]="countryControl"
-    tabindex="-1"
-    panelClass="fs-phone-country-pane"
-    #countryInput>
+      class="phone-code"
+      (opened)="countrySelectOpened()"
+      (selectionChange)="countrySelectionChange()"
+      [formControl]="countryControl"
+      [typeaheadDebounceInterval]="750"
+      tabindex="-1"
+      panelClass="fs-phone-country-pane"
+      #countryInput>
     <mat-select-trigger>
       <fs-country-phone-code
         [code]="countryControl.value"
@@ -22,24 +23,24 @@
     @for (country of countries$ | async; track country) {
       @if (!!country.countryCode) {
         <mat-option
-          [value]="country.isoCode"
-          [attr.data-name]="country.name">
-          {{ country.name }}
-          <span class="fs-phone-country-code">
-            &nbsp;+{{ country.countryCode }}&nbsp;
-          </span>
+            [value]="country.isoCode"
+            [attr.data-name]="country.name">
           <fs-country-flag
             class="fs-phone-country-flag"
             [code]="country.isoCode">
           </fs-country-flag>
+          {{ country.name }}
+          <span class="fs-phone-country-code">
+            &nbsp;+{{ country.countryCode }}&nbsp;
+          </span>
         </mat-option>
       }
     }
   </mat-select>
   <ng-container [formGroup]="phoneNumberParts">
     <span
-      class="code"
-      [class.disabled]="disabled">
+        class="code"
+        [class.disabled]="disabled">
       {{ codeValue }}
     </span>
     <span class="phone-input">
