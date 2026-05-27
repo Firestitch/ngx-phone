@@ -161,7 +161,6 @@ export class FsPhoneFieldComponent implements OnInit, OnDestroy, ControlValueAcc
 
   public ngAfterContentInit(): void {
     const portal = new DomPortal(this._el.nativeElement);
-
     const el = this._el;
 
     el.nativeElement.childNodes.forEach((c) => {

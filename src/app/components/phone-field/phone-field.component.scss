@@ -101,6 +101,10 @@
 }
 
 
+::ng-deep .mat-form-field-appearance-fill .phone-group .mat-mdc-select-arrow-wrapper {
+  transform: translateY(-1px) !important;
+}
+
 .fs-phone-country-flag {
   margin-right: 4px;
 }
